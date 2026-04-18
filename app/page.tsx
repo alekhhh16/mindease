@@ -34,7 +34,7 @@ const NAV_LINKS = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Breathing", href: "#breathing" },
   { label: "Self-Help", href: "#selfhelp" },
-  { label: "Grounding", href: "/app/selfhelp#grounding", external: false },
+  { label: "Grounding", href: "/app/self-help#grounding", external: false },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
 ] as const;
@@ -454,7 +454,7 @@ const FEATURES = [
     title: "Breathing Exercises",
     desc: "Guided animations to calm your nervous system.",
     badge: "",
-    to: "/app/selfhelp" as const,
+    to: "/app/self-help" as const,
     anchor: null,
   },
   {
@@ -462,7 +462,7 @@ const FEATURES = [
     title: "Grounding Techniques",
     desc: "5-4-3-2-1 sensory grounding for anxiety relief.",
     badge: "",
-    to: "/app/selfhelp" as const,
+    to: "/app/self-help" as const,
     anchor: null,
   },
   {
@@ -926,7 +926,7 @@ function BreathingSection() {
               {active ? "Stop" : "Start Breathing"}
             </button>
             <Link
-              href="/app/selfhelp"
+              href="/app/self-help"
               data-ocid="breathing.secondary_button"
               className="btn-pill btn-secondary text-sm font-semibold"
             >
@@ -1229,7 +1229,7 @@ function Footer() {
               </div>
               <div>
                 <Link
-                  href="/app/selfhelp"
+                  href="/app/self-help"
                   className="hover:text-foreground transition-colors"
                 >
                   Self-Help

@@ -17,7 +17,7 @@ const NAV_ITEMS = [
   { path: "/app", icon: Home, label: "Home", emoji: "🏠" },
   { path: "/app/chat", icon: MessageCircle, label: "Chat", emoji: "💬" },
   { path: "/app/mood", icon: BarChart2, label: "Mood", emoji: "📊" },
-  { path: "/app/selfhelp", icon: Leaf, label: "Self-Help", emoji: "🌿" },
+  { path: "/app/self-help", icon: Leaf, label: "Self-Help", emoji: "🌿" },
   { path: "/app/sos", icon: Phone, label: "SOS", emoji: "🚨" },
 ];
 

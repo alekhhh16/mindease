@@ -35,7 +35,7 @@ const QUICK_LINKS = [
     ocid: "dashboard.quicklink.item.1",
   },
   {
-    to: "/app/selfhelp",
+    to: "/app/self-help",
     emoji: "🌬️",
     label: "Breathe",
     desc: "Calm your mind",
@@ -43,7 +43,7 @@ const QUICK_LINKS = [
     ocid: "dashboard.quicklink.item.2",
   },
   {
-    to: "/app/selfhelp",
+    to: "/app/self-help",
     emoji: "🌿",
     label: "Ground",
     desc: "Be present",
@@ -189,7 +189,7 @@ function StressReliefModal({ onClose }: { onClose: () => void }) {
 
         <div className="flex gap-3 w-full">
           <Link
-            href="/app/selfhelp"
+            href="/app/self-help"
             onClick={onClose}
             data-ocid="stress-relief.secondary_button"
             className="flex-1 btn-pill btn-secondary text-center text-sm font-semibold py-2.5"
