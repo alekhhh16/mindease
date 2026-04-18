@@ -59,11 +59,11 @@ export function useJournalQueries(userId: string = "default") {
   });
 
   const addMutation = useMutation({
-    mutationFn: async (content: string) => {
+    mutationFn: async (data: { title: string; content: string }) => {
       const res = await fetch("/api/journal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, content }),
+        body: JSON.stringify({ userId, title: data.title, content: data.content }),
       });
       if (!res.ok) throw new Error("Failed to add journal entry");
       return res.json();

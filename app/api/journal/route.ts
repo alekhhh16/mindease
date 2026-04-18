@@ -21,16 +21,18 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { userId = "default", content } = body;
+  const { userId = "default", title, content } = body;
   
-  if (!content) {
-    return NextResponse.json({ error: "Content required" }, { status: 400 });
+  if (!content || !title) {
+    return NextResponse.json({ error: "Title and content required" }, { status: 400 });
   }
   
   const entry: JournalEntry = {
     id: crypto.randomUUID(),
     userId,
+    title,
     content,
+    createdAt: new Date().toISOString(),
     timestamp: Date.now(),
   };
   
