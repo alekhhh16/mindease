@@ -1,0 +1,27 @@
+{
+  "overview": "MindEase is a premium AI-powered mental wellness platform for students (ages 18-28). It features a context-aware AI chat assistant, mood tracking with progress visualization, guided breathing exercises, instant stress relief, and a beautiful glassmorphic interface with dark mode support.",
+  "features": [
+    "Context-aware AI chat with conversational memory and emotion detection",
+    "Dashboard with mood trend graph, streaks, badges, and motivational quotes",
+    "Instant 'I Feel Stressed' relief flow with animated breathing circle",
+    "Daily mood check-in with emoji selector and weekly history chart",
+    "Dark mode toggle with complete glassmorphism design in both modes",
+    "Smooth 60fps animations using Framer Motion throughout",
+    "Fully responsive mobile-first design",
+    "SOS emergency helplines with guided breathing",
+    "Self-help modules: breathing exercises, grounding techniques, focus, sleep"
+  ],
+  "category": "health-wellness",
+  "tags": [
+    "mental-health",
+    "wellness",
+    "ai",
+    "students",
+    "mood-tracker",
+    "meditation",
+    "stress-relief",
+    "glassmorphism",
+    "dark-mode"
+  ],
+  "last_updated": "2026-04-14T15:18:42.542Z"
+}

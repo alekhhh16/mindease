@@ -1,0 +1,82 @@
+// Version: 1.0.0
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type HttpHeader__837997805 = {name : Text; value : Text};
+type HttpMethod__1061600257 = {#get; #head; #post};
+type HttpRequest__103655718 =
+  {
+    body : ?Blob;
+    headers : [HttpHeader__837997805];
+    is_replicated : ?Bool;
+    max_response_bytes : ?Nat64;
+    method : HttpMethod__1061600257;
+    transform :
+      ?{
+         context : Blob;
+         function :
+           shared query TransformArgs__358391134 ->
+             async HttpResponse__280953736
+       };
+    url : Text
+  };
+type HttpResponse__280953736 =
+  {body : Blob; headers : [HttpHeader__837997805]; status : Nat};
+type Int__270357528 = Int__616954475;
+type Int__616954475 = Int;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type JournalEntry__751434829 =
+  {content : Text; id : Text; timestamp : Time__900049286; userId : Text};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type List__415060402<T> = List__790383201<T>;
+type List__790383201<T> =
+  {
+    var blockIndex : Nat__490723111;
+    var blocks : [var [var ?T]];
+    var elementIndex : Nat__490723111
+  };
+type MoodEntry__69853156 =
+  {
+    emoji : Text;
+    moodScore : Nat;
+    note : ?Text;
+    timestamp : Time__900049286;
+    userId : Text
+  };
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type Time__796480547 = Int__270357528;
+type Time__900049286 = Time__796480547;
+type TransformArgs__358391134 =
+  {context : Blob; response : HttpResponse__280953736};
+type UserStats__700797651 = {badges : [Text]; currentStreak : Nat};
+actor {
+  stable GROQ_API_KEY : Text;
+  stable var OPENAI_API_KEY : Text;
+  stable SYSTEM_PROMPT : Text;
+  stable ic :
+    actor {
+      http_request :
+        shared HttpRequest__103655718 -> async HttpResponse__280953736
+    };
+  stable journalEntries :
+    {
+      var root :
+        Node__46230540<Text, List__415060402<JournalEntry__751434829>>;
+      var size : Nat__490723111
+    };
+  stable var journalIdCounter : Nat;
+  stable moodEntries :
+    {
+      var root : Node__46230540<Text, List__415060402<MoodEntry__69853156>>;
+      var size : Nat__490723111
+    };
+  stable quotes : [Text];
+  stable userStats :
+    {
+      var root : Node__46230540<Text, UserStats__700797651>;
+      var size : Nat__490723111
+    }
+};

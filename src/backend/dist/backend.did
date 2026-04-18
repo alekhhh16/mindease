@@ -1,0 +1,55 @@
+type UserStats = 
+ record {
+   badges: vec text;
+   currentStreak: nat;
+ };
+type TransformArgs = 
+ record {
+   context: blob;
+   response: HttpResponse;
+ };
+type Time = int;
+type MoodEntry = 
+ record {
+   emoji: text;
+   moodScore: nat;
+   note: opt text;
+   timestamp: Time;
+   userId: text;
+ };
+type JournalEntry = 
+ record {
+   content: text;
+   id: text;
+   timestamp: Time;
+   userId: text;
+ };
+type HttpResponse = 
+ record {
+   body: blob;
+   headers: vec HttpHeader;
+   status: nat;
+ };
+type HttpHeader = 
+ record {
+   name: text;
+   value: text;
+ };
+type ChatMessage = 
+ record {
+   content: text;
+   role: text;
+ };
+service : {
+  addJournalEntry: (content: text) -> (text);
+  addMoodEntry: (userId: text, moodScore: nat, emoji: text, note:
+   opt text) -> ();
+  getDailyQuote: () -> (text) query;
+  getJournalEntries: () -> (vec JournalEntry) query;
+  getLatestMoodEntry: (userId: text) -> (opt MoodEntry) query;
+  getMoodEntries: (userId: text) -> (vec MoodEntry) query;
+  getUserStats: (userId: text) -> (UserStats) query;
+  sendChatMessage: (messages: vec ChatMessage, latestMood: opt text) ->
+   (text);
+  transformResponse: (args: TransformArgs) -> (HttpResponse) query;
+}
