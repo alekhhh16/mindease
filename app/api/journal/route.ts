@@ -39,3 +39,23 @@ export async function POST(request: NextRequest) {
   
   return NextResponse.json(entry);
 }
+
+export async function DELETE(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const entryId = searchParams.get("id");
+  
+  if (!entryId) {
+    return NextResponse.json({ error: "Entry ID required" }, { status: 400 });
+  }
+  
+  // Find and delete entry from all users
+  for (const [userId, entries] of journalEntries.entries()) {
+    const index = entries.findIndex(e => e.id === entryId);
+    if (index !== -1) {
+      entries.splice(index, 1);
+      return NextResponse.json({ success: true });
+    }
+  }
+  
+  return NextResponse.json({ error: "Entry not found" }, { status: 404 });
+}
