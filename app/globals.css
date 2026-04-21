@@ -112,15 +112,36 @@
 @layer utilities {
   /* Glassmorphism utilities - theme aware */
   .glass {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50;
+    @apply backdrop-blur-xl border;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .glass {
+    background-color: rgba(30, 30, 50, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   .glass-dark {
-    @apply bg-card/70 backdrop-blur-2xl border border-border/40;
+    @apply backdrop-blur-2xl border;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+  
+  .dark .glass-dark {
+    background-color: rgba(30, 30, 50, 0.7);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   .glass-elevated {
-    @apply bg-card/80 backdrop-blur-2xl border border-border/50 shadow-lg;
+    @apply backdrop-blur-2xl border shadow-lg;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .glass-elevated {
+    background-color: rgba(30, 30, 50, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   /* Shadow hierarchy - theme aware */
