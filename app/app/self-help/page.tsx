@@ -22,6 +22,12 @@ import {
   SkipForward,
   X,
   Check,
+  Eye,
+  Hand,
+  Ear,
+  Flower2,
+  Cookie,
+  ArrowRight,
 } from "lucide-react";
 
 // Guided meditations data
@@ -554,6 +560,170 @@ function BreathingExercise({
   );
 }
 
+// 5-4-3-2-1 Grounding Exercise Component
+function GroundingExercise({ onClose }: { onClose: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [inputs, setInputs] = useState<string[][]>([[], [], [], [], []]);
+  const [isComplete, setIsComplete] = useState(false);
+
+  const steps = [
+    { count: 5, sense: "SEE", icon: Eye, color: "from-blue-500 to-cyan-500", prompt: "Look around. What 5 things can you SEE?" },
+    { count: 4, sense: "TOUCH", icon: Hand, color: "from-green-500 to-emerald-500", prompt: "Focus on your body. What 4 things can you FEEL?" },
+    { count: 3, sense: "HEAR", icon: Ear, color: "from-purple-500 to-pink-500", prompt: "Listen carefully. What 3 things can you HEAR?" },
+    { count: 2, sense: "SMELL", icon: Flower2, color: "from-orange-500 to-amber-500", prompt: "Take a breath. What 2 things can you SMELL?" },
+    { count: 1, sense: "TASTE", icon: Cookie, color: "from-red-500 to-rose-500", prompt: "Notice your mouth. What 1 thing can you TASTE?" },
+  ];
+
+  const currentStepData = steps[currentStep];
+  const currentInputs = inputs[currentStep] || [];
+
+  const handleAddInput = (value: string) => {
+    if (value.trim() && currentInputs.length < currentStepData.count) {
+      const newInputs = [...inputs];
+      newInputs[currentStep] = [...currentInputs, value.trim()];
+      setInputs(newInputs);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setIsComplete(true);
+    }
+  };
+
+  const canProceed = currentInputs.length === currentStepData.count;
+  const IconComponent = currentStepData.icon;
+
+  if (isComplete) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="bg-[#1a1a2e] rounded-3xl p-8 max-w-md w-full text-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-6">
+            <Check className="w-10 h-10 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">Well Done!</h3>
+          <p className="text-gray-400 mb-6">
+            You have completed the 5-4-3-2-1 grounding exercise. Take a moment to notice how you feel now compared to before.
+          </p>
+          <p className="text-sm text-gray-500 mb-8">
+            This technique helps bring you back to the present moment by engaging all your senses.
+          </p>
+          <button
+            onClick={onClose}
+            className="w-full py-4 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold"
+          >
+            Finish
+          </button>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-[#1a1a2e] rounded-3xl p-6 max-w-md w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-start mb-6">
+          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${currentStepData.color} flex items-center justify-center`}>
+            <IconComponent className="w-8 h-8 text-white" />
+          </div>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+            <X className="w-5 h-5 text-gray-400" />
+          </button>
+        </div>
+
+        {/* Progress */}
+        <div className="flex gap-2 mb-6">
+          {steps.map((step, idx) => (
+            <div
+              key={idx}
+              className={`flex-1 h-2 rounded-full transition-all ${
+                idx < currentStep ? "bg-green-500" : idx === currentStep ? `bg-gradient-to-r ${step.color}` : "bg-white/10"
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="text-center mb-6">
+          <span className={`text-6xl font-bold bg-gradient-to-r ${currentStepData.color} bg-clip-text text-transparent`}>
+            {currentStepData.count}
+          </span>
+          <p className="text-white text-lg mt-2">things you can <span className="font-bold">{currentStepData.sense}</span></p>
+        </div>
+
+        <p className="text-gray-400 text-center mb-6">{currentStepData.prompt}</p>
+
+        {/* Input area */}
+        <div className="space-y-3 mb-6">
+          {Array.from({ length: currentStepData.count }).map((_, idx) => (
+            <div key={idx} className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                currentInputs[idx] ? `bg-gradient-to-r ${currentStepData.color} text-white` : "bg-white/10 text-gray-500"
+              }`}>
+                {idx + 1}
+              </div>
+              {currentInputs[idx] ? (
+                <span className="text-white flex-1">{currentInputs[idx]}</span>
+              ) : idx === currentInputs.length ? (
+                <input
+                  type="text"
+                  placeholder={`Enter something you can ${currentStepData.sense.toLowerCase()}...`}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-white/30"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddInput((e.target as HTMLInputElement).value);
+                      (e.target as HTMLInputElement).value = "";
+                    }
+                  }}
+                  autoFocus
+                />
+              ) : (
+                <span className="text-gray-600 flex-1">Waiting...</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Next button */}
+        <button
+          onClick={handleNext}
+          disabled={!canProceed}
+          className={`w-full py-4 rounded-full flex items-center justify-center gap-2 font-semibold transition-all ${
+            canProceed
+              ? `bg-gradient-to-r ${currentStepData.color} text-white`
+              : "bg-white/10 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          {currentStep < 4 ? "Next Step" : "Complete"} <ArrowRight className="w-5 h-5" />
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function SelfHelpPage() {
   const [selectedMeditation, setSelectedMeditation] = useState<
     (typeof guidedMeditations)[0] | null
@@ -563,8 +733,9 @@ export default function SelfHelpPage() {
   >(null);
   const [completedActivities, setCompletedActivities] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<
-    "meditations" | "breathing" | "selfcare"
+    "meditations" | "breathing" | "grounding" | "selfcare"
   >("meditations");
+  const [showGroundingExercise, setShowGroundingExercise] = useState(false);
 
   const toggleActivity = (activity: string) => {
     setCompletedActivities((prev) =>
@@ -600,13 +771,14 @@ export default function SelfHelpPage() {
           {[
             { id: "meditations", label: "Meditations", icon: Headphones },
             { id: "breathing", label: "Breathing", icon: Wind },
+            { id: "grounding", label: "Grounding", icon: Eye },
             { id: "selfcare", label: "Self Care", icon: Heart },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() =>
                 setActiveTab(
-                  tab.id as "meditations" | "breathing" | "selfcare"
+                  tab.id as "meditations" | "breathing" | "grounding" | "selfcare"
                 )
               }
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg transition-all ${
@@ -725,6 +897,84 @@ export default function SelfHelpPage() {
             </motion.div>
           )}
 
+          {activeTab === "grounding" && (
+            <motion.div
+              key="grounding"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <h2 className="text-lg font-semibold text-white mb-4">
+                Grounding Techniques
+              </h2>
+              
+              {/* 5-4-3-2-1 Exercise Card */}
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={() => setShowGroundingExercise(true)}
+                className="w-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 border border-indigo-500/30 rounded-2xl p-6 text-left transition-all"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-white">5</span>
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold text-lg">5-4-3-2-1 Technique</h3>
+                    <p className="text-gray-400 text-sm">Interactive sensory grounding</p>
+                  </div>
+                </div>
+                <p className="text-gray-300 text-sm mb-4">
+                  A powerful technique to bring you back to the present moment by engaging all five senses. Perfect for anxiety, panic, or overwhelming thoughts.
+                </p>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-blue-400" />
+                    <span className="text-gray-400">5 See</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Hand className="w-4 h-4 text-green-400" />
+                    <span className="text-gray-400">4 Touch</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Ear className="w-4 h-4 text-purple-400" />
+                    <span className="text-gray-400">3 Hear</span>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Takes ~3-5 minutes</span>
+                  <span className="text-indigo-400 text-sm font-medium flex items-center gap-1">
+                    Start Exercise <ArrowRight className="w-4 h-4" />
+                  </span>
+                </div>
+              </motion.button>
+
+              {/* Info card */}
+              <div className="bg-white/5 rounded-2xl p-5 mt-6">
+                <h4 className="text-white font-semibold mb-3">When to Use Grounding</h4>
+                <ul className="space-y-2 text-sm text-gray-400">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    During anxiety or panic attacks
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    When feeling overwhelmed or dissociated
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    Before important meetings or exams
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    After triggering or stressful situations
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+          )}
+
           {activeTab === "selfcare" && (
             <motion.div
               key="selfcare"
@@ -821,6 +1071,13 @@ export default function SelfHelpPage() {
             exercise={selectedExercise}
             onClose={() => setSelectedExercise(null)}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Grounding Exercise Modal */}
+      <AnimatePresence>
+        {showGroundingExercise && (
+          <GroundingExercise onClose={() => setShowGroundingExercise(false)} />
         )}
       </AnimatePresence>
     </div>

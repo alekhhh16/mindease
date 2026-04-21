@@ -16,6 +16,7 @@ import {
   History,
   X,
   Trash2,
+  Shield,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -690,6 +691,16 @@ export default function ChatPage() {
           <History size={20} />
         </button>
       )}
+
+      {/* Privacy indicator */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass text-xs text-muted-foreground">
+          <svg className="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+          </svg>
+          <span>Private & Secure</span>
+        </div>
+      </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3 pt-14">
         {messages.map((msg) => (

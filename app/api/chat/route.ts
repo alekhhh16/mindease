@@ -115,8 +115,9 @@ export async function POST(request: NextRequest) {
       systemPrompt += `\n\nThe user's latest mood score is ${latestMood}/5. Consider this context in your response.`;
     }
 
-    // Format messages for AI SDK
-    const formattedMessages = messages.map((msg) => ({
+    // Format messages for AI SDK - limit to last 20 for performance
+    const recentMessages = messages.slice(-20);
+    const formattedMessages = recentMessages.map((msg) => ({
       role: msg.role as "user" | "assistant",
       content: msg.content,
     }));
