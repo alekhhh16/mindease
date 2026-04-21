@@ -260,14 +260,14 @@ function MeditationPlayer({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-card rounded-3xl p-8 max-w-md w-full shadow-elevated border border-border"
+        className="bg-[#1a1a2e] rounded-3xl p-8 max-w-md w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
@@ -278,26 +278,26 @@ function MeditationPlayer({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
+            className="p-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <X className="w-5 h-5 text-muted-foreground" />
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <h3 className="text-2xl font-bold text-foreground mb-2">
+        <h3 className="text-2xl font-bold text-white mb-2">
           {meditation.title}
         </h3>
-        <p className="text-muted-foreground mb-8">{meditation.description}</p>
+        <p className="text-gray-400 mb-8">{meditation.description}</p>
 
         {/* Current instruction */}
-        <div className="bg-muted/50 dark:bg-muted/30 rounded-2xl p-6 mb-8 min-h-[100px] flex items-center justify-center">
+        <div className="bg-white/5 rounded-2xl p-6 mb-8 min-h-[100px] flex items-center justify-center">
           <AnimatePresence mode="wait">
             <motion.p
               key={currentStep}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="text-foreground text-center text-lg italic"
+              className="text-white text-center text-lg italic"
             >
               {meditation.audioScript[currentStep]}
             </motion.p>
@@ -311,10 +311,10 @@ function MeditationPlayer({
               key={idx}
               className={`w-2 h-2 rounded-full transition-all ${
                 idx === currentStep
-                  ? "bg-primary w-6"
+                  ? "bg-white w-6"
                   : idx < currentStep
-                    ? "bg-primary/50"
-                    : "bg-muted"
+                    ? "bg-white/50"
+                    : "bg-white/20"
               }`}
             />
           ))}
@@ -324,20 +324,20 @@ function MeditationPlayer({
         <div className="flex items-center justify-center gap-6">
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="p-3 rounded-full hover:bg-muted transition-colors"
+            className="p-3 rounded-full hover:bg-white/10 transition-colors"
           >
             {isMuted ? (
-              <VolumeX className="w-5 h-5 text-muted-foreground" />
+              <VolumeX className="w-5 h-5 text-gray-400" />
             ) : (
-              <Volume2 className="w-5 h-5 text-foreground" />
+              <Volume2 className="w-5 h-5 text-white" />
             )}
           </button>
 
           <button
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-            className="p-3 rounded-full hover:bg-muted transition-colors"
+            className="p-3 rounded-full hover:bg-white/10 transition-colors"
           >
-            <SkipBack className="w-5 h-5 text-foreground" />
+            <SkipBack className="w-5 h-5 text-white" />
           </button>
 
           <button
@@ -357,9 +357,9 @@ function MeditationPlayer({
                 Math.min(meditation.audioScript.length - 1, currentStep + 1)
               )
             }
-            className="p-3 rounded-full hover:bg-muted transition-colors"
+            className="p-3 rounded-full hover:bg-white/10 transition-colors"
           >
-            <SkipForward className="w-5 h-5 text-foreground" />
+            <SkipForward className="w-5 h-5 text-white" />
           </button>
 
           <div className="w-11" /> {/* Spacer for alignment */}
@@ -468,25 +468,25 @@ function BreathingExercise({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-card rounded-3xl p-8 max-w-md w-full text-center shadow-elevated border border-border relative"
+        className="bg-[#1a1a2e] rounded-3xl p-8 max-w-md w-full text-center"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
         >
-          <X className="w-5 h-5 text-muted-foreground" />
+          <X className="w-5 h-5 text-gray-400" />
         </button>
 
-        <h3 className="text-2xl font-bold text-foreground mb-2">{exercise.name}</h3>
-        <p className="text-muted-foreground mb-8">{exercise.description}</p>
+        <h3 className="text-2xl font-bold text-white mb-2">{exercise.name}</h3>
+        <p className="text-gray-400 mb-8">{exercise.description}</p>
 
         {/* Breathing circle */}
         <div className="relative w-48 h-48 mx-auto mb-8">
@@ -501,14 +501,14 @@ function BreathingExercise({
             className={`absolute inset-4 rounded-full bg-gradient-to-br ${exercise.color} opacity-50`}
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold text-foreground">
+            <span className="text-3xl font-bold text-white">
               {isActive
                 ? (exercise.pattern[phase as keyof typeof exercise.pattern] ||
                     0) - count
                 : "Ready"}
             </span>
             {isActive && (
-              <span className="text-muted-foreground mt-2">{getPhaseText()}</span>
+              <span className="text-white/70 mt-2">{getPhaseText()}</span>
             )}
           </div>
         </div>
@@ -520,10 +520,10 @@ function BreathingExercise({
               key={idx}
               className={`w-3 h-3 rounded-full transition-all ${
                 idx < cycles
-                  ? "bg-primary"
+                  ? "bg-white"
                   : idx === cycles && isActive
-                    ? "bg-primary/50"
-                    : "bg-muted"
+                    ? "bg-white/50"
+                    : "bg-white/20"
               }`}
             />
           ))}
@@ -549,7 +549,7 @@ function BreathingExercise({
           {exercise.benefits.map((benefit, idx) => (
             <span
               key={idx}
-              className="px-3 py-1 rounded-full bg-muted text-muted-foreground text-sm"
+              className="px-3 py-1 rounded-full bg-white/10 text-white/70 text-sm"
             >
               {benefit}
             </span>
@@ -602,23 +602,23 @@ function GroundingExercise({ onClose }: { onClose: () => void }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-card rounded-3xl p-8 max-w-md w-full text-center shadow-elevated border border-border"
+          className="bg-[#1a1a2e] rounded-3xl p-8 max-w-md w-full text-center"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-foreground mb-3">Well Done!</h3>
-          <p className="text-muted-foreground mb-6">
+          <h3 className="text-2xl font-bold text-white mb-3">Well Done!</h3>
+          <p className="text-gray-400 mb-6">
             You have completed the 5-4-3-2-1 grounding exercise. Take a moment to notice how you feel now compared to before.
           </p>
-          <p className="text-sm text-muted-foreground/70 mb-8">
+          <p className="text-sm text-gray-500 mb-8">
             This technique helps bring you back to the present moment by engaging all your senses.
           </p>
           <button
@@ -637,21 +637,21 @@ function GroundingExercise({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-card rounded-3xl p-6 max-w-md w-full shadow-elevated border border-border"
+        className="bg-[#1a1a2e] rounded-3xl p-6 max-w-md w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
           <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${currentStepData.color} flex items-center justify-center`}>
             <IconComponent className="w-8 h-8 text-white" />
           </div>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-muted transition-colors">
-            <X className="w-5 h-5 text-muted-foreground" />
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
@@ -661,7 +661,7 @@ function GroundingExercise({ onClose }: { onClose: () => void }) {
             <div
               key={idx}
               className={`flex-1 h-2 rounded-full transition-all ${
-                idx < currentStep ? "bg-green-500" : idx === currentStep ? `bg-gradient-to-r ${step.color}` : "bg-muted"
+                idx < currentStep ? "bg-green-500" : idx === currentStep ? `bg-gradient-to-r ${step.color}` : "bg-white/10"
               }`}
             />
           ))}
@@ -671,27 +671,27 @@ function GroundingExercise({ onClose }: { onClose: () => void }) {
           <span className={`text-6xl font-bold bg-gradient-to-r ${currentStepData.color} bg-clip-text text-transparent`}>
             {currentStepData.count}
           </span>
-          <p className="text-foreground text-lg mt-2">things you can <span className="font-bold">{currentStepData.sense}</span></p>
+          <p className="text-white text-lg mt-2">things you can <span className="font-bold">{currentStepData.sense}</span></p>
         </div>
 
-        <p className="text-muted-foreground text-center mb-6">{currentStepData.prompt}</p>
+        <p className="text-gray-400 text-center mb-6">{currentStepData.prompt}</p>
 
         {/* Input area */}
         <div className="space-y-3 mb-6">
           {Array.from({ length: currentStepData.count }).map((_, idx) => (
             <div key={idx} className="flex items-center gap-3">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                currentInputs[idx] ? `bg-gradient-to-r ${currentStepData.color} text-white` : "bg-muted text-muted-foreground"
+                currentInputs[idx] ? `bg-gradient-to-r ${currentStepData.color} text-white` : "bg-white/10 text-gray-500"
               }`}>
                 {idx + 1}
               </div>
               {currentInputs[idx] ? (
-                <span className="text-foreground flex-1">{currentInputs[idx]}</span>
+                <span className="text-white flex-1">{currentInputs[idx]}</span>
               ) : idx === currentInputs.length ? (
                 <input
                   type="text"
                   placeholder={`Enter something you can ${currentStepData.sense.toLowerCase()}...`}
-                  className="flex-1 bg-muted/50 border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-white/30"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       handleAddInput((e.target as HTMLInputElement).value);
@@ -701,7 +701,7 @@ function GroundingExercise({ onClose }: { onClose: () => void }) {
                   autoFocus
                 />
               ) : (
-                <span className="text-muted-foreground/50 flex-1">Waiting...</span>
+                <span className="text-gray-600 flex-1">Waiting...</span>
               )}
             </div>
           ))}
@@ -714,7 +714,7 @@ function GroundingExercise({ onClose }: { onClose: () => void }) {
           className={`w-full py-4 rounded-full flex items-center justify-center gap-2 font-semibold transition-all ${
             canProceed
               ? `bg-gradient-to-r ${currentStepData.color} text-white`
-              : "bg-muted text-muted-foreground cursor-not-allowed"
+              : "bg-white/10 text-gray-500 cursor-not-allowed"
           }`}
         >
           {currentStep < 4 ? "Next Step" : "Complete"} <ArrowRight className="w-5 h-5" />
@@ -746,7 +746,7 @@ export default function SelfHelpPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <motion.div
@@ -757,9 +757,9 @@ export default function SelfHelpPage() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Self Help</h1>
+            <h1 className="text-2xl font-bold text-white">Self Help</h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-gray-400">
             Tools and resources for your wellbeing
           </p>
         </motion.div>
@@ -767,7 +767,7 @@ export default function SelfHelpPage() {
 
       {/* Tab Navigation */}
       <div className="px-6 mb-6">
-        <div className="flex gap-2 bg-muted/50 dark:bg-muted/30 p-1.5 rounded-xl border border-border/50">
+        <div className="flex gap-2 bg-white/5 p-1 rounded-xl">
           {[
             { id: "meditations", label: "Meditations", icon: Headphones },
             { id: "breathing", label: "Breathing", icon: Wind },
@@ -783,8 +783,8 @@ export default function SelfHelpPage() {
               }
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg transition-all ${
                 activeTab === tab.id
-                  ? "bg-card shadow-soft text-foreground font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white/10 text-white"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -805,7 +805,7 @@ export default function SelfHelpPage() {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-4"
             >
-              <h2 className="text-lg font-bold text-foreground mb-4">
+              <h2 className="text-lg font-semibold text-white mb-4">
                 Guided Meditations
               </h2>
               {guidedMeditations.map((meditation, idx) => {
@@ -817,7 +817,7 @@ export default function SelfHelpPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
                     onClick={() => setSelectedMeditation(meditation)}
-                    className="w-full bg-card hover:bg-muted/50 rounded-2xl p-4 flex items-center gap-4 transition-all text-left shadow-soft border border-border"
+                    className="w-full bg-white/5 hover:bg-white/10 rounded-2xl p-4 flex items-center gap-4 transition-all text-left"
                   >
                     <div
                       className={`w-14 h-14 rounded-xl bg-gradient-to-br ${meditation.color} flex items-center justify-center flex-shrink-0`}
@@ -825,24 +825,24 @@ export default function SelfHelpPage() {
                       <IconComponent className="w-7 h-7 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-foreground font-semibold">
+                      <h3 className="text-white font-semibold">
                         {meditation.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm truncate">
+                      <p className="text-gray-400 text-sm truncate">
                         {meditation.description}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Clock className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-muted-foreground text-xs">
+                        <Clock className="w-3 h-3 text-gray-500" />
+                        <span className="text-gray-500 text-xs">
                           {meditation.duration}
                         </span>
-                        <span className="text-border">|</span>
-                        <span className="text-muted-foreground text-xs">
+                        <span className="text-gray-600">|</span>
+                        <span className="text-gray-500 text-xs">
                           {meditation.category}
                         </span>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                    <ChevronRight className="w-5 h-5 text-gray-500" />
                   </motion.button>
                 );
               })}
@@ -857,7 +857,7 @@ export default function SelfHelpPage() {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-4"
             >
-              <h2 className="text-lg font-bold text-foreground mb-4">
+              <h2 className="text-lg font-semibold text-white mb-4">
                 Breathing Exercises
               </h2>
               {breathingExercises.map((exercise, idx) => (
@@ -867,10 +867,10 @@ export default function SelfHelpPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
                   onClick={() => setSelectedExercise(exercise)}
-                  className="w-full bg-card hover:bg-muted/50 rounded-2xl p-4 text-left transition-all shadow-soft border border-border"
+                  className="w-full bg-white/5 hover:bg-white/10 rounded-2xl p-4 text-left transition-all"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-foreground font-semibold">{exercise.name}</h3>
+                    <h3 className="text-white font-semibold">{exercise.name}</h3>
                     <div
                       className={`px-3 py-1 rounded-full bg-gradient-to-r ${exercise.color} text-white text-xs font-medium`}
                     >
@@ -879,14 +879,14 @@ export default function SelfHelpPage() {
                         .join("-")}
                     </div>
                   </div>
-                  <p className="text-muted-foreground text-sm mb-3">
+                  <p className="text-gray-400 text-sm mb-3">
                     {exercise.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {exercise.benefits.map((benefit, bidx) => (
                       <span
                         key={bidx}
-                        className="px-2 py-1 rounded-full bg-muted text-muted-foreground text-xs"
+                        className="px-2 py-1 rounded-full bg-white/5 text-gray-400 text-xs"
                       >
                         {benefit}
                       </span>
@@ -905,7 +905,7 @@ export default function SelfHelpPage() {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-4"
             >
-              <h2 className="text-lg font-bold text-foreground mb-4">
+              <h2 className="text-lg font-semibold text-white mb-4">
                 Grounding Techniques
               </h2>
               
@@ -914,46 +914,46 @@ export default function SelfHelpPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 onClick={() => setShowGroundingExercise(true)}
-                className="w-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-500/20 dark:to-purple-500/20 hover:from-indigo-200 hover:to-purple-200 dark:hover:from-indigo-500/30 dark:hover:to-purple-500/30 border border-indigo-200 dark:border-indigo-500/30 rounded-2xl p-6 text-left transition-all shadow-soft"
+                className="w-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 border border-indigo-500/30 rounded-2xl p-6 text-left transition-all"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
                     <span className="text-2xl font-bold text-white">5</span>
                   </div>
                   <div>
-                    <h3 className="text-foreground font-bold text-lg">5-4-3-2-1 Technique</h3>
-                    <p className="text-muted-foreground text-sm">Interactive sensory grounding</p>
+                    <h3 className="text-white font-bold text-lg">5-4-3-2-1 Technique</h3>
+                    <p className="text-gray-400 text-sm">Interactive sensory grounding</p>
                   </div>
                 </div>
-                <p className="text-foreground/80 dark:text-gray-300 text-sm mb-4">
+                <p className="text-gray-300 text-sm mb-4">
                   A powerful technique to bring you back to the present moment by engaging all five senses. Perfect for anxiety, panic, or overwhelming thoughts.
                 </p>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                    <span className="text-muted-foreground">5 See</span>
+                    <Eye className="w-4 h-4 text-blue-400" />
+                    <span className="text-gray-400">5 See</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Hand className="w-4 h-4 text-green-500 dark:text-green-400" />
-                    <span className="text-muted-foreground">4 Touch</span>
+                    <Hand className="w-4 h-4 text-green-400" />
+                    <span className="text-gray-400">4 Touch</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Ear className="w-4 h-4 text-purple-500 dark:text-purple-400" />
-                    <span className="text-muted-foreground">3 Hear</span>
+                    <Ear className="w-4 h-4 text-purple-400" />
+                    <span className="text-gray-400">3 Hear</span>
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">Takes ~3-5 minutes</span>
-                  <span className="text-indigo-600 dark:text-indigo-400 text-sm font-medium flex items-center gap-1">
+                  <span className="text-xs text-gray-500">Takes ~3-5 minutes</span>
+                  <span className="text-indigo-400 text-sm font-medium flex items-center gap-1">
                     Start Exercise <ArrowRight className="w-4 h-4" />
                   </span>
                 </div>
               </motion.button>
 
               {/* Info card */}
-              <div className="bg-card rounded-2xl p-5 mt-6 shadow-soft border border-border">
-                <h4 className="text-foreground font-semibold mb-3">When to Use Grounding</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+              <div className="bg-white/5 rounded-2xl p-5 mt-6">
+                <h4 className="text-white font-semibold mb-3">When to Use Grounding</h4>
+                <ul className="space-y-2 text-sm text-gray-400">
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                     During anxiety or panic attacks
@@ -984,10 +984,10 @@ export default function SelfHelpPage() {
               className="space-y-6"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-foreground">
+                <h2 className="text-lg font-semibold text-white">
                   Self Care Checklist
                 </h2>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-400">
                   {completedActivities.length} completed
                 </span>
               </div>
@@ -1000,7 +1000,7 @@ export default function SelfHelpPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    className="bg-card rounded-2xl p-4 shadow-soft border border-border"
+                    className="bg-white/5 rounded-2xl p-4"
                   >
                     <div className="flex items-center gap-3 mb-4">
                       <div
@@ -1008,7 +1008,7 @@ export default function SelfHelpPage() {
                       >
                         <IconComponent className={`w-5 h-5 ${category.color}`} />
                       </div>
-                      <h3 className="text-foreground font-semibold">
+                      <h3 className="text-white font-semibold">
                         {category.category}
                       </h3>
                     </div>
@@ -1019,15 +1019,15 @@ export default function SelfHelpPage() {
                           onClick={() => toggleActivity(activity)}
                           className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
                             completedActivities.includes(activity)
-                              ? "bg-muted/70"
-                              : "hover:bg-muted/50"
+                              ? "bg-white/10"
+                              : "hover:bg-white/5"
                           }`}
                         >
                           <div
                             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                               completedActivities.includes(activity)
                                 ? `${category.bgColor} border-transparent`
-                                : "border-muted-foreground/40"
+                                : "border-gray-600"
                             }`}
                           >
                             {completedActivities.includes(activity) && (
@@ -1037,8 +1037,8 @@ export default function SelfHelpPage() {
                           <span
                             className={`text-sm ${
                               completedActivities.includes(activity)
-                                ? "text-muted-foreground line-through"
-                                : "text-foreground"
+                                ? "text-gray-400 line-through"
+                                : "text-white"
                             }`}
                           >
                             {activity}
