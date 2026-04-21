@@ -1,17 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   BarChart2,
   Home,
   Leaf,
+  LogOut,
   MessageCircle,
   Moon,
   Phone,
   Sun,
+  User,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 const NAV_ITEMS = [
   { path: "/app", icon: Home, label: "Home", emoji: "🏠" },
@@ -23,9 +28,48 @@ const NAV_ITEMS = [
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isDark = theme === "dark";
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    // Get initial user
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      setIsLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen max-h-screen bg-background">
@@ -69,6 +113,46 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+
+            {/* User menu */}
+            {user ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-smooth"
+                >
+                  <User size={18} />
+                </button>
+                {showUserMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl border border-white/10 shadow-lg overflow-hidden">
+                    <div className="px-4 py-3 border-b border-white/10">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {user.user_metadata?.display_name || user.email}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="w-full px-4 py-3 flex items-center gap-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="text-xs font-medium px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
 
             <Link
               href="/app/sos"

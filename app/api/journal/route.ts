@@ -1,63 +1,110 @@
+import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import type { JournalEntry } from "@/types";
 
-// In-memory storage (will be replaced with Supabase later)
-const journalEntries: Map<string, JournalEntry[]> = new Map();
+export async function GET() {
+  const supabase = await createClient();
 
-function getUserEntries(userId: string): JournalEntry[] {
-  if (!journalEntries.has(userId)) {
-    journalEntries.set(userId, []);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json([]);
   }
-  return journalEntries.get(userId)!;
-}
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId") || "default";
-  
-  const entries = getUserEntries(userId);
-  return NextResponse.json(entries);
+  const { data: entries, error } = await supabase
+    .from("journal_entries")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const transformed = entries.map((entry) => ({
+    id: entry.id,
+    userId: entry.user_id,
+    title: entry.title,
+    content: entry.content,
+    createdAt: entry.created_at,
+    timestamp: new Date(entry.created_at).getTime(),
+  }));
+
+  return NextResponse.json(transformed);
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { userId = "default", title, content } = body;
-  
-  if (!content || !title) {
-    return NextResponse.json({ error: "Title and content required" }, { status: 400 });
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  
-  const entry: JournalEntry = {
-    id: crypto.randomUUID(),
-    userId,
-    title,
-    content,
-    createdAt: new Date().toISOString(),
-    timestamp: Date.now(),
-  };
-  
-  const entries = getUserEntries(userId);
-  entries.push(entry);
-  
-  return NextResponse.json(entry);
+
+  const body = await request.json();
+  const { title, content } = body;
+
+  if (!title || !content) {
+    return NextResponse.json(
+      { error: "Title and content required" },
+      { status: 400 }
+    );
+  }
+
+  const { data: entry, error } = await supabase
+    .from("journal_entries")
+    .insert({
+      user_id: user.id,
+      title,
+      content,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    id: entry.id,
+    userId: entry.user_id,
+    title: entry.title,
+    content: entry.content,
+    createdAt: entry.created_at,
+    timestamp: new Date(entry.created_at).getTime(),
+  });
 }
 
 export async function DELETE(request: NextRequest) {
+  const supabase = await createClient();
   const { searchParams } = new URL(request.url);
   const entryId = searchParams.get("id");
-  
+
   if (!entryId) {
     return NextResponse.json({ error: "Entry ID required" }, { status: 400 });
   }
-  
-  // Find and delete entry from all users
-  for (const [userId, entries] of journalEntries.entries()) {
-    const index = entries.findIndex(e => e.id === entryId);
-    if (index !== -1) {
-      entries.splice(index, 1);
-      return NextResponse.json({ success: true });
-    }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  
-  return NextResponse.json({ error: "Entry not found" }, { status: 404 });
+
+  const { error } = await supabase
+    .from("journal_entries")
+    .delete()
+    .eq("id", entryId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
 }
