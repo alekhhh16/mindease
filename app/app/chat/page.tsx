@@ -594,7 +594,11 @@ export default function ChatPage() {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: sanitizedHistory, latestMood: moodRaw }),
+          body: JSON.stringify({ 
+            messages: sanitizedHistory, 
+            latestMood: moodRaw,
+            userId: userId // Pass userId for memory retrieval
+          }),
         });
         const data = await res.json();
         const rawResponse = data.response || FALLBACK_MESSAGE;
@@ -620,6 +624,18 @@ export default function ChatPage() {
           await saveMessage(sessionId, "assistant", responseText);
         }
 
+        // Extract and save memories from conversation (async, don't wait)
+        if (userId && sanitizedHistory.length >= 2) {
+          fetch("/api/memories/extract", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              messages: [...sanitizedHistory, { role: "assistant", content: responseText }],
+              sessionId 
+            }),
+          }).catch(() => {}); // Silent fail - memory extraction is not critical
+        }
+
         if (offerBreathing) setShowBreathingPrompt(true);
         if (ttsEnabled) setTimeout(() => voice.speak(responseText), 200);
       } catch {
@@ -635,7 +651,7 @@ export default function ChatPage() {
         setTyping(false);
       }
     },
-    [typing, voiceEnabled, ttsEnabled, showBreathingPrompt, voice, conversationHistory, latestMood, currentSessionId, isAuthenticated, createNewSession, saveMessage]
+    [typing, voiceEnabled, ttsEnabled, showBreathingPrompt, voice, conversationHistory, latestMood, currentSessionId, isAuthenticated, createNewSession, saveMessage, userId]
   );
 
   const handleVoiceToggle = () => {

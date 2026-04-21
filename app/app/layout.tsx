@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BarChart2,
+  Brain,
   Home,
   Leaf,
   LogOut,
@@ -134,6 +135,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         {user.email}
                       </p>
                     </div>
+                    <Link
+                      href="/app/memories"
+                      onClick={() => setShowUserMenu(false)}
+                      className="w-full px-4 py-3 flex items-center gap-2 text-sm text-foreground hover:bg-muted/50 transition-colors"
+                    >
+                      <Brain size={16} />
+                      My Memories
+                    </Link>
                     <button
                       type="button"
                       onClick={handleSignOut}
