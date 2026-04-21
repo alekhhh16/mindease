@@ -15,6 +15,7 @@ import {
   Wind,
   History,
   X,
+  Trash2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -267,6 +268,7 @@ function ChatHistorySidebar({
   onSelectSession, 
   onNewChat, 
   onClose,
+  onDeleteSession,
   isOpen 
 }: { 
   sessions: ChatSession[];
@@ -274,9 +276,22 @@ function ChatHistorySidebar({
   onSelectSession: (id: string) => void;
   onNewChat: () => void;
   onClose: () => void;
+  onDeleteSession: (id: string) => void;
   isOpen: boolean;
 }) {
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  
   if (!isOpen) return null;
+  
+  const handleDelete = (e: React.MouseEvent, sessionId: string) => {
+    e.stopPropagation();
+    setDeleteConfirmId(sessionId);
+  };
+  
+  const confirmDelete = (sessionId: string) => {
+    onDeleteSession(sessionId);
+    setDeleteConfirmId(null);
+  };
   
   return (
     <motion.div
@@ -307,25 +322,56 @@ function ChatHistorySidebar({
           <p className="text-sm text-muted-foreground text-center py-4">No previous chats</p>
         ) : (
           sessions.map((session) => (
-            <button
-              key={session.id}
-              onClick={() => onSelectSession(session.id)}
-              className={`w-full text-left p-3 rounded-xl transition-smooth ${
-                currentSessionId === session.id 
-                  ? "bg-primary/20 border border-primary/30" 
-                  : "hover:bg-muted/50 border border-transparent"
-              }`}
-            >
-              <p className="text-sm font-medium text-foreground truncate">{session.title}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {new Date(session.created_at).toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "short",
-                  hour: "2-digit",
-                  minute: "2-digit"
-                })}
-              </p>
-            </button>
+            <div key={session.id} className="relative group">
+              {deleteConfirmId === session.id ? (
+                <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/30">
+                  <p className="text-xs text-foreground mb-2">Delete this chat?</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => confirmDelete(session.id)}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground font-medium"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirmId(null)}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-muted text-foreground"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => onSelectSession(session.id)}
+                  className={`w-full text-left p-3 rounded-xl transition-smooth ${
+                    currentSessionId === session.id 
+                      ? "bg-primary/20 border border-primary/30" 
+                      : "hover:bg-muted/50 border border-transparent"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{session.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {new Date(session.created_at).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => handleDelete(e, session.id)}
+                      className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-all"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </button>
+              )}
+            </div>
           ))
         )}
       </div>
@@ -478,6 +524,27 @@ export default function ChatPage() {
     setShowHistory(false);
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    if (!isAuthenticated) return;
+    
+    // Delete all messages first (cascade should handle this, but being explicit)
+    await supabase.from("chat_messages").delete().eq("session_id", sessionId);
+    
+    // Delete the session
+    const { error } = await supabase.from("chat_sessions").delete().eq("id", sessionId);
+    
+    if (!error) {
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      
+      // If deleted current session, reset to new chat
+      if (currentSessionId === sessionId) {
+        setCurrentSessionId(null);
+        setMessages([WELCOME_MESSAGE]);
+        setConversationHistory([]);
+      }
+    }
+  };
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmedText = text.trim();
@@ -592,6 +659,7 @@ export default function ChatPage() {
           onSelectSession={handleSelectSession}
           onNewChat={handleNewChat}
           onClose={() => setShowHistory(false)}
+          onDeleteSession={handleDeleteSession}
           isOpen={showHistory}
         />
       </AnimatePresence>
