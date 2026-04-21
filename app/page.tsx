@@ -100,7 +100,14 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <DarkModeToggle />
           <Link
-            href="/app"
+            href="/auth/login"
+            data-ocid="nav.login_button"
+            className="btn-pill btn-secondary text-sm font-medium"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/auth/sign-up"
             data-ocid="nav.primary_button"
             className="btn-pill btn-primary text-sm font-medium"
           >
@@ -145,7 +152,14 @@ function Navbar() {
                 </a>
               ))}
               <Link
-                href="/app"
+                href="/auth/login"
+                onClick={handleLink}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2 transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/auth/sign-up"
                 onClick={handleLink}
                 data-ocid="nav.mobile_primary_button"
                 className="btn-pill btn-primary text-sm font-medium text-center mt-2"
