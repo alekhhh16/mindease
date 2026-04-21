@@ -6,87 +6,93 @@
   :root {
     --radius: 1.5rem;
 
-    /* MindEase palette (OKLCH L C H) — Light mode */
-    --peach: 0.888 0.071 53;
-    --peach-dark: 0.876 0.057 50;
-    --lavender: 0.921 0.04 286;
-    --sage: 0.84 0.065 144;
-    --beige: 0.967 0.023 102;
-    --accent-coral: 0.715 0.099 34;
-    --page-bg: 0.961 0.013 82;
-    --text-main: 0.15 0 0;
-    --text-muted: 0.405 0 0;
-    --white: 1 0 0;
+    /* MindEase Light Mode - Professional SaaS Palette */
+    --background: 0.98 0.005 240; /* #F9FAFB - soft white */
+    --foreground: 0.145 0.01 260; /* #111827 - dark text */
+    --card: 1 0 0; /* #FFFFFF - pure white cards */
+    --card-foreground: 0.145 0.01 260; /* #111827 */
+    --popover: 1 0 0;
+    --popover-foreground: 0.145 0.01 260;
+    --primary: 0.65 0.15 25; /* Warm coral/orange */
+    --primary-foreground: 1 0 0;
+    --secondary: 0.96 0.02 30; /* Light peach */
+    --secondary-foreground: 0.25 0.01 260;
+    --muted: 0.97 0.005 240; /* #F3F4F6 */
+    --muted-foreground: 0.45 0.01 260; /* #6B7280 */
+    --accent: 0.94 0.03 280; /* Light lavender */
+    --accent-foreground: 0.25 0.01 260;
+    --destructive: 0.55 0.22 25; /* Strong red */
+    --destructive-foreground: 1 0 0;
+    --border: 0.91 0.005 240; /* #E5E7EB */
+    --input: 0.91 0.005 240;
+    --ring: 0.65 0.15 25;
+    
+    /* Chart colors */
+    --chart-1: 0.65 0.15 25;
+    --chart-2: 0.75 0.12 150;
+    --chart-3: 0.7 0.1 280;
+    --chart-4: 0.8 0.08 50;
+    --chart-5: 0.6 0.12 40;
+    
+    /* Sidebar */
+    --sidebar: 1 0 0;
+    --sidebar-foreground: 0.145 0.01 260;
+    --sidebar-primary: 0.65 0.15 25;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.96 0.02 30;
+    --sidebar-accent-foreground: 0.25 0.01 260;
+    --sidebar-border: 0.91 0.005 240;
+    --sidebar-ring: 0.65 0.15 25;
 
-    /* Semantic tokens — Light mode */
-    --background: var(--page-bg);
-    --foreground: var(--text-main);
-    --card: var(--white);
-    --card-foreground: var(--text-main);
-    --popover: var(--white);
-    --popover-foreground: var(--text-main);
-    --primary: var(--accent-coral);
-    --primary-foreground: var(--white);
-    --secondary: var(--peach);
-    --secondary-foreground: var(--text-main);
-    --muted: var(--beige);
-    --muted-foreground: var(--text-muted);
-    --accent: var(--lavender);
-    --accent-foreground: var(--text-main);
-    --destructive: 0.577 0.245 27;
-    --destructive-foreground: var(--white);
-    --border: 0.922 0.015 80;
-    --input: 0.922 0.015 80;
-    --ring: var(--accent-coral);
-    --chart-1: var(--accent-coral);
-    --chart-2: var(--sage);
-    --chart-3: var(--lavender);
-    --chart-4: var(--peach);
-    --chart-5: 0.646 0.12 41;
-    --sidebar: var(--white);
-    --sidebar-foreground: var(--text-main);
-    --sidebar-primary: var(--accent-coral);
-    --sidebar-primary-foreground: var(--white);
-    --sidebar-accent: var(--peach);
-    --sidebar-accent-foreground: var(--text-main);
-    --sidebar-border: var(--border);
-    --sidebar-ring: var(--accent-coral);
+    /* Custom semantic colors for light mode */
+    --text-primary: 0.145 0.01 260; /* #111827 */
+    --text-secondary: 0.37 0.01 260; /* #374151 */
+    --text-muted: 0.45 0.01 260; /* #6B7280 */
+    --surface-elevated: 1 0 0;
+    --surface-subtle: 0.97 0.005 240;
   }
 
   .dark {
-    /* Dark mode palette (OKLCH L C H) */
-    --background: 0.18 0.02 260;
+    /* Dark mode palette */
+    --background: 0.13 0.02 260; /* Darker background */
     --foreground: 0.95 0.01 80;
-    --card: 0.24 0.025 260;
+    --card: 0.18 0.025 260;
     --card-foreground: 0.93 0.01 80;
-    --popover: 0.24 0.025 260;
+    --popover: 0.18 0.025 260;
     --popover-foreground: 0.93 0.01 80;
-    --primary: 0.715 0.099 34;
+    --primary: 0.715 0.12 30;
     --primary-foreground: 0.95 0.01 80;
-    --secondary: 0.7 0.08 50;
+    --secondary: 0.35 0.04 50;
     --secondary-foreground: 0.95 0.01 80;
-    --muted: 0.35 0.015 260;
+    --muted: 0.25 0.015 260;
     --muted-foreground: 0.65 0.01 80;
-    --accent: 0.82 0.055 290;
+    --accent: 0.35 0.04 280;
     --accent-foreground: 0.95 0.01 80;
-    --destructive: 0.577 0.245 27;
+    --destructive: 0.55 0.22 25;
     --destructive-foreground: 0.95 0.01 80;
-    --border: 0.3 0.02 260;
-    --input: 0.3 0.02 260;
-    --ring: 0.715 0.099 34;
-    --chart-1: 0.715 0.099 34;
+    --border: 0.28 0.02 260;
+    --input: 0.28 0.02 260;
+    --ring: 0.715 0.12 30;
+    --chart-1: 0.715 0.12 30;
     --chart-2: 0.75 0.08 150;
-    --chart-3: 0.82 0.055 290;
+    --chart-3: 0.7 0.08 280;
     --chart-4: 0.7 0.08 50;
     --chart-5: 0.646 0.12 41;
-    --sidebar: 0.24 0.025 260;
+    --sidebar: 0.18 0.025 260;
     --sidebar-foreground: 0.93 0.01 80;
-    --sidebar-primary: 0.715 0.099 34;
+    --sidebar-primary: 0.715 0.12 30;
     --sidebar-primary-foreground: 0.95 0.01 80;
-    --sidebar-accent: 0.82 0.055 290;
+    --sidebar-accent: 0.35 0.04 280;
     --sidebar-accent-foreground: 0.95 0.01 80;
-    --sidebar-border: 0.3 0.02 260;
-    --sidebar-ring: 0.715 0.099 34;
+    --sidebar-border: 0.28 0.02 260;
+    --sidebar-ring: 0.715 0.12 30;
+
+    /* Custom semantic colors for dark mode */
+    --text-primary: 0.95 0.01 80;
+    --text-secondary: 0.85 0.01 80;
+    --text-muted: 0.65 0.01 80;
+    --surface-elevated: 0.22 0.025 260;
+    --surface-subtle: 0.16 0.02 260;
   }
 
   * {
@@ -104,61 +110,52 @@
 }
 
 @layer utilities {
-  /* Glassmorphism utilities */
+  /* Glassmorphism utilities - theme aware */
   .glass {
-    background-color: oklch(var(--card) / 0.4);
-    backdrop-filter: blur(12px);
-    border: 1px solid oklch(var(--border) / 0.3);
+    @apply bg-card/60 backdrop-blur-xl border border-border/50;
   }
 
   .glass-dark {
-    background-color: oklch(var(--card) / 0.35);
-    backdrop-filter: blur(16px);
-    border: 1px solid oklch(var(--border) / 0.25);
+    @apply bg-card/70 backdrop-blur-2xl border border-border/40;
   }
 
   .glass-elevated {
-    background-color: oklch(var(--card) / 0.5);
-    backdrop-filter: blur(20px);
-    border: 1px solid oklch(var(--border) / 0.4);
+    @apply bg-card/80 backdrop-blur-2xl border border-border/50 shadow-lg;
   }
 
-  /* Shadow hierarchy */
+  /* Shadow hierarchy - theme aware */
   .shadow-soft {
-    box-shadow: 0 4px 20px oklch(var(--foreground) / 0.08);
+    box-shadow: 0 4px 20px oklch(var(--foreground) / 0.06);
   }
 
   .shadow-soft-lg {
-    box-shadow: 0 8px 32px oklch(var(--foreground) / 0.1);
+    box-shadow: 0 8px 32px oklch(var(--foreground) / 0.08);
   }
 
   .shadow-elevated {
-    box-shadow: 0 12px 48px oklch(var(--foreground) / 0.12);
+    box-shadow: 0 12px 48px oklch(var(--foreground) / 0.1);
   }
 
-  /* Semantic color utilities */
-  .bg-hero {
-    background-color: oklch(var(--peach-dark));
+  /* Card styles for light mode */
+  .card-elevated {
+    @apply bg-card rounded-2xl border border-border shadow-soft;
   }
 
-  .bg-peach {
-    background-color: oklch(var(--peach));
+  .card-interactive {
+    @apply bg-card rounded-2xl border border-border shadow-soft hover:shadow-soft-lg hover:border-primary/20 transition-all duration-300;
   }
 
-  .bg-lavender {
-    background-color: oklch(var(--lavender));
+  /* Text utilities */
+  .text-heading {
+    color: oklch(var(--text-primary));
   }
 
-  .bg-sage {
-    background-color: oklch(var(--sage));
+  .text-body {
+    color: oklch(var(--text-secondary));
   }
 
-  .bg-beige {
-    background-color: oklch(var(--beige));
-  }
-
-  .text-coral {
-    color: oklch(var(--accent-coral));
+  .text-subtle {
+    color: oklch(var(--text-muted));
   }
 
   /* Premium button styles */
@@ -172,25 +169,21 @@
   }
 
   .btn-primary {
-    background-color: oklch(var(--accent-coral));
-    color: oklch(var(--white));
+    @apply bg-primary text-primary-foreground;
   }
 
   .btn-primary:hover {
-    background-color: oklch(0.66 0.099 34);
+    @apply opacity-90;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px oklch(var(--accent-coral) / 0.4);
+    box-shadow: 0 8px 24px oklch(var(--primary) / 0.3);
   }
 
   .btn-secondary {
-    border: 2px solid oklch(var(--accent-coral));
-    color: oklch(var(--accent-coral));
-    background: transparent;
+    @apply border-2 border-primary text-primary bg-transparent;
   }
 
   .btn-secondary:hover {
-    background-color: oklch(var(--accent-coral));
-    color: oklch(var(--white));
+    @apply bg-primary text-primary-foreground;
     transform: translateY(-2px);
   }
 
@@ -199,13 +192,13 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Fade & slide animations */
-  .fade-in {
-    animation: fade-in 0.4s ease forwards;
+  /* Surface utilities */
+  .surface-elevated {
+    background-color: oklch(var(--surface-elevated));
   }
 
-  .slide-up {
-    animation: slide-up 0.6s ease forwards;
+  .surface-subtle {
+    background-color: oklch(var(--surface-subtle));
   }
 }
 
