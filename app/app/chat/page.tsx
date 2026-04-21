@@ -2,15 +2,19 @@
 
 import { useVoice } from "@/hooks/useVoice";
 import { useLatestMoodEntry } from "@/hooks/useQueries";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import {
   AlertTriangle,
+  MessageSquarePlus,
   Mic,
   MicOff,
   Send,
   Volume2,
   VolumeX,
   Wind,
+  History,
+  X,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -27,7 +31,7 @@ type Emotion =
   | "crisis";
 
 interface Message {
-  id: number;
+  id: string;
   role: "user" | "ai";
   content: string;
   timestamp: Date;
@@ -38,6 +42,13 @@ interface Message {
 interface ConversationMessage {
   role: "user" | "assistant";
   content: string;
+}
+
+interface ChatSession {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
 }
 
 const FALLBACK_MESSAGE =
@@ -101,6 +112,15 @@ const QUICK_REPLIES = [
   { label: "🌊 I need grounding", text: "I need grounding exercises, I feel overwhelmed" },
   { label: "😴 I can't sleep", text: "I can't sleep, my mind won't stop racing" },
 ];
+
+const WELCOME_MESSAGE: Message = {
+  id: "welcome",
+  role: "ai",
+  content: "Hey there 💙 I'm MindEase, your personal wellness companion. How are you feeling today? I'm here to listen — no judgment, just support.",
+  timestamp: new Date(),
+  emotion: "caring",
+  emotionLabel: "Caring",
+};
 
 function BreathingPrompt({ onAccept, onDecline }: { onAccept: () => void; onDecline: () => void }) {
   return (
@@ -215,7 +235,7 @@ function CrisisCard({ onDismiss }: { onDismiss: () => void }) {
           View Support Options
         </Link>
         <a href="tel:9152987821" className="btn-pill text-xs py-2 px-4 border border-destructive/40 text-destructive font-semibold bg-transparent">
-          📞 iCALL: 9152987821
+          iCALL: 9152987821
         </a>
         <button type="button" onClick={onDismiss} className="btn-pill text-xs py-2 px-4 border border-border text-muted-foreground bg-transparent">
           {"I'm okay for now"}
@@ -241,35 +261,188 @@ function EmotionBadge({ emotion, label }: { emotion: Emotion; label?: string }) 
   );
 }
 
-function getUserId(): string {
-  if (typeof window === "undefined") return "default";
-  let id = localStorage.getItem("mindease_user_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("mindease_user_id", id);
-  }
-  return id;
+function ChatHistorySidebar({ 
+  sessions, 
+  currentSessionId, 
+  onSelectSession, 
+  onNewChat, 
+  onClose,
+  isOpen 
+}: { 
+  sessions: ChatSession[];
+  currentSessionId: string | null;
+  onSelectSession: (id: string) => void;
+  onNewChat: () => void;
+  onClose: () => void;
+  isOpen: boolean;
+}) {
+  if (!isOpen) return null;
+  
+  return (
+    <motion.div
+      initial={{ x: -300, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -300, opacity: 0 }}
+      className="absolute left-0 top-0 bottom-0 w-72 glass-elevated z-30 border-r border-border/50 flex flex-col"
+    >
+      <div className="p-4 border-b border-border/50 flex items-center justify-between">
+        <h3 className="font-semibold text-foreground">Chat History</h3>
+        <button onClick={onClose} className="p-1.5 rounded-full hover:bg-muted transition-smooth">
+          <X size={18} />
+        </button>
+      </div>
+      
+      <div className="p-3">
+        <button
+          onClick={onNewChat}
+          className="w-full btn-pill btn-primary text-sm py-2.5 flex items-center justify-center gap-2"
+        >
+          <MessageSquarePlus size={16} />
+          New Chat
+        </button>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+        {sessions.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">No previous chats</p>
+        ) : (
+          sessions.map((session) => (
+            <button
+              key={session.id}
+              onClick={() => onSelectSession(session.id)}
+              className={`w-full text-left p-3 rounded-xl transition-smooth ${
+                currentSessionId === session.id 
+                  ? "bg-primary/20 border border-primary/30" 
+                  : "hover:bg-muted/50 border border-transparent"
+              }`}
+            >
+              <p className="text-sm font-medium text-foreground truncate">{session.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {new Date(session.created_at).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                })}
+              </p>
+            </button>
+          ))
+        )}
+      </div>
+    </motion.div>
+  );
 }
 
 export default function ChatPage() {
-  const [userId, setUserId] = useState("default");
+  const supabase = createClient();
   
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  
+  // Check auth and load sessions
   useEffect(() => {
-    setUserId(getUserId());
-  }, []);
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        setIsAuthenticated(true);
+        loadSessions(user.id);
+      } else {
+        // Use localStorage fallback for non-authenticated users
+        let id = localStorage.getItem("mindease_user_id");
+        if (!id) {
+          id = crypto.randomUUID();
+          localStorage.setItem("mindease_user_id", id);
+        }
+        setUserId(id);
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuth();
+  }, [supabase.auth]);
 
-  const { data: latestMood } = useLatestMoodEntry(userId);
+  const loadSessions = async (uid: string) => {
+    const { data } = await supabase
+      .from("chat_sessions")
+      .select("*")
+      .eq("user_id", uid)
+      .order("updated_at", { ascending: false })
+      .limit(20);
+    
+    if (data) setSessions(data);
+  };
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 0,
-      role: "ai",
-      content: "Hey there 💙 I'm MindEase, your personal wellness companion. How are you feeling today? I'm here to listen — no judgment, just support.",
-      timestamp: new Date(),
-      emotion: "caring",
-      emotionLabel: "Caring",
-    },
-  ]);
+  const loadSessionMessages = async (sessionId: string) => {
+    const { data } = await supabase
+      .from("chat_messages")
+      .select("*")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: true });
+    
+    if (data && data.length > 0) {
+      const loadedMessages: Message[] = data.map((msg) => ({
+        id: msg.id,
+        role: msg.role === "user" ? "user" : "ai",
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+        emotion: "neutral" as Emotion,
+      }));
+      
+      const loadedHistory: ConversationMessage[] = data.map((msg) => ({
+        role: msg.role as "user" | "assistant",
+        content: msg.content,
+      }));
+      
+      setMessages([WELCOME_MESSAGE, ...loadedMessages]);
+      setConversationHistory(loadedHistory);
+    }
+  };
+
+  const createNewSession = async (): Promise<string | null> => {
+    if (!isAuthenticated || !userId) return null;
+    
+    const { data, error } = await supabase
+      .from("chat_sessions")
+      .insert({ user_id: userId, title: "New Chat" })
+      .select()
+      .single();
+    
+    if (error || !data) return null;
+    
+    setSessions((prev) => [data, ...prev]);
+    return data.id;
+  };
+
+  const saveMessage = async (sessionId: string, role: "user" | "assistant", content: string) => {
+    if (!isAuthenticated || !userId) return;
+    
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      user_id: userId,
+      role,
+      content,
+    });
+    
+    // Update session title if it's the first user message
+    if (role === "user") {
+      const title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
+      await supabase
+        .from("chat_sessions")
+        .update({ title, updated_at: new Date().toISOString() })
+        .eq("id", sessionId);
+      
+      setSessions((prev) => 
+        prev.map((s) => s.id === sessionId ? { ...s, title, updated_at: new Date().toISOString() } : s)
+      );
+    }
+  };
+
+  const { data: latestMood } = useLatestMoodEntry(userId || "default");
+
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -281,7 +454,6 @@ export default function ChatPage() {
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const nextId = useRef(1);
 
   const voice = useVoice();
 
@@ -293,6 +465,19 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing]);
 
+  const handleNewChat = () => {
+    setCurrentSessionId(null);
+    setMessages([WELCOME_MESSAGE]);
+    setConversationHistory([]);
+    setShowHistory(false);
+  };
+
+  const handleSelectSession = async (sessionId: string) => {
+    setCurrentSessionId(sessionId);
+    await loadSessionMessages(sessionId);
+    setShowHistory(false);
+  };
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmedText = text.trim();
@@ -301,7 +486,7 @@ export default function ChatPage() {
       const userEmotion = detectEmotion(trimmedText);
 
       const userMsg: Message = {
-        id: nextId.current++,
+        id: crypto.randomUUID(),
         role: "user",
         content: trimmedText,
         timestamp: new Date(),
@@ -326,6 +511,18 @@ export default function ChatPage() {
 
       const moodRaw = latestMood?.moodScore ? String(latestMood.moodScore) : null;
 
+      // Create session if authenticated and no current session
+      let sessionId = currentSessionId;
+      if (isAuthenticated && !sessionId) {
+        sessionId = await createNewSession();
+        if (sessionId) setCurrentSessionId(sessionId);
+      }
+
+      // Save user message
+      if (sessionId) {
+        await saveMessage(sessionId, "user", trimmedText);
+      }
+
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
@@ -339,7 +536,7 @@ export default function ChatPage() {
         const mappedEmotion = emotionLabel ? labelToEmotion(emotionLabel) : userEmotion;
 
         const aiMsg: Message = {
-          id: nextId.current++,
+          id: crypto.randomUUID(),
           role: "ai",
           content: responseText,
           timestamp: new Date(),
@@ -351,11 +548,16 @@ export default function ChatPage() {
         setMessages((prev) => [...prev, aiMsg]);
         setTyping(false);
 
+        // Save AI response
+        if (sessionId) {
+          await saveMessage(sessionId, "assistant", responseText);
+        }
+
         if (offerBreathing) setShowBreathingPrompt(true);
         if (ttsEnabled) setTimeout(() => voice.speak(responseText), 200);
       } catch {
         const fallbackMsg: Message = {
-          id: nextId.current++,
+          id: crypto.randomUUID(),
           role: "ai",
           content: FALLBACK_MESSAGE,
           timestamp: new Date(),
@@ -366,7 +568,7 @@ export default function ChatPage() {
         setTyping(false);
       }
     },
-    [typing, voiceEnabled, ttsEnabled, showBreathingPrompt, voice, conversationHistory, latestMood]
+    [typing, voiceEnabled, ttsEnabled, showBreathingPrompt, voice, conversationHistory, latestMood, currentSessionId, isAuthenticated, createNewSession, saveMessage]
   );
 
   const handleVoiceToggle = () => {
@@ -384,9 +586,28 @@ export default function ChatPage() {
     <div className="flex flex-col h-full bg-background relative overflow-hidden">
       <AnimatePresence>
         {showBreathingExercise && <BreathingOverlay onClose={() => setShowBreathingExercise(false)} />}
+        <ChatHistorySidebar
+          sessions={sessions}
+          currentSessionId={currentSessionId}
+          onSelectSession={handleSelectSession}
+          onNewChat={handleNewChat}
+          onClose={() => setShowHistory(false)}
+          isOpen={showHistory}
+        />
       </AnimatePresence>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      {/* History toggle button */}
+      {isAuthenticated && (
+        <button
+          onClick={() => setShowHistory(true)}
+          className="absolute left-4 top-4 z-10 p-2 rounded-full glass hover:bg-muted/50 transition-smooth"
+          title="Chat History"
+        >
+          <History size={20} />
+        </button>
+      )}
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 pt-14">
         {messages.map((msg) => (
           <motion.div
             key={msg.id}
