@@ -112,25 +112,15 @@
 @layer utilities {
   /* Glassmorphism utilities - theme aware */
   .glass {
-    background-color: oklch(var(--card) / 0.6);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid oklch(var(--border) / 0.5);
+    @apply bg-card/60 backdrop-blur-xl border border-border/50;
   }
 
   .glass-dark {
-    background-color: oklch(var(--card) / 0.7);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: 1px solid oklch(var(--border) / 0.4);
+    @apply bg-card/70 backdrop-blur-2xl border border-border/40;
   }
 
   .glass-elevated {
-    background-color: oklch(var(--card) / 0.8);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border: 1px solid oklch(var(--border) / 0.5);
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    @apply bg-card/80 backdrop-blur-2xl border border-border/50 shadow-lg;
   }
 
   /* Shadow hierarchy - theme aware */
