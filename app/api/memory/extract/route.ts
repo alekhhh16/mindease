@@ -58,9 +58,12 @@ Return only information that was EXPLICITLY stated by the user. If nothing perso
     });
 
     // Save extracted memories to database
+    console.log("[v0] Memory extraction result:", object.memories);
+    
     if (object.memories && object.memories.length > 0) {
       for (const memory of object.memories) {
-        await supabase
+        console.log("[v0] Saving memory:", memory.key, "=", memory.value, "for user:", user.id);
+        const { error } = await supabase
           .from("user_memory")
           .upsert({
             user_id: user.id,
@@ -68,6 +71,10 @@ Return only information that was EXPLICITLY stated by the user. If nothing perso
             value: memory.value,
             updated_at: new Date().toISOString()
           }, { onConflict: "user_id,key" });
+        
+        if (error) {
+          console.error("[v0] Memory save error:", error.message);
+        }
       }
     }
 

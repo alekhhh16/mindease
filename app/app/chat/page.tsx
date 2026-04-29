@@ -627,12 +627,11 @@ export default function ChatPage() {
 
         // Extract and save memories from conversation (async, don't wait)
         if (userId && sanitizedHistory.length >= 2) {
-          fetch("/api/memories/extract", {
+          fetch("/api/memory/extract", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
-              messages: [...sanitizedHistory, { role: "assistant", content: responseText }],
-              sessionId 
+              messages: [...sanitizedHistory, { role: "assistant", content: responseText }]
             }),
           }).catch(() => {}); // Silent fail - memory extraction is not critical
         }
