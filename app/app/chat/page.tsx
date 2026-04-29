@@ -667,7 +667,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-64px-64px)] bg-background relative overflow-hidden">
       <AnimatePresence>
         {showBreathingExercise && <BreathingOverlay onClose={() => setShowBreathingExercise(false)} />}
         <ChatHistorySidebar
