@@ -42,20 +42,29 @@ IMPORTANT: Respond ONLY with a valid JSON array. No explanations, no markdown, j
 
 Format: [{"key": "type", "value": "info"}, ...]
 
-Keys to look for:
-- "name" - user's actual name
+Keys to use (ONE entry per key, combine multiple values with commas):
+- "name" - user's full name
+- "nickname" - any nickname they prefer
 - "college" - college/university name
+- "course" - what they are studying (BTech, MBA, etc.)
+- "semester" - current semester if mentioned
 - "location" - city/location
 - "age" - age if mentioned
-- "interest" - hobbies/interests
+- "friends" - ALL friend names combined (e.g., "Anmol, Arpit, Alekh")
+- "family" - family members mentioned (e.g., "mom, dad, sister Priya")
+- "interests" - ALL hobbies/interests combined (e.g., "music, coding, gaming")
 - "occupation" - student/job
-- "situation" - current life situation
+- "relationship" - relationship status if mentioned
+- "feelings" - current emotional state/struggles
+- "goals" - any goals or aspirations mentioned
+
+RULES:
+1. Only extract EXPLICITLY stated information
+2. Combine multiple values of same type with commas
+3. If nothing found, respond with: []
 
 Conversation:
 ${conversationText}
-
-If no personal info found, respond with: []
-Only extract EXPLICITLY stated information. Do not assume.
 
 JSON Response:`
     });
@@ -75,17 +84,35 @@ JSON Response:`
         memories = parsed.filter((m: Memory) => m.key && m.value);
       }
     } catch {
-      console.log("[v0] Failed to parse memory extraction response:", text);
       return NextResponse.json({ extracted: [] });
     }
 
     // Save extracted memories to database
-    console.log("[v0] Memory extraction result:", memories);
-    
     if (memories.length > 0) {
       for (const memory of memories) {
-        console.log("[v0] Saving memory:", memory.key, "=", memory.value, "for user:", user.id);
-        const { error } = await supabase
+        // For fields that can have multiple values, merge with existing
+        if (["friends", "interests", "family"].includes(memory.key)) {
+          const { data: existing } = await supabase
+            .from("user_memory")
+            .select("value")
+            .eq("user_id", user.id)
+            .eq("key", memory.key)
+            .single();
+          
+          if (existing?.value) {
+            // Merge existing and new values, remove duplicates
+            const existingValues = existing.value.split(",").map((v: string) => v.trim().toLowerCase());
+            const newValues = memory.value.split(",").map(v => v.trim());
+            const uniqueNew = newValues.filter(v => !existingValues.includes(v.toLowerCase()));
+            if (uniqueNew.length > 0) {
+              memory.value = existing.value + ", " + uniqueNew.join(", ");
+            } else {
+              continue; // Skip if no new values
+            }
+          }
+        }
+        
+        await supabase
           .from("user_memory")
           .upsert({
             user_id: user.id,
@@ -93,10 +120,6 @@ JSON Response:`
             value: memory.value,
             updated_at: new Date().toISOString()
           }, { onConflict: "user_id,key" });
-        
-        if (error) {
-          console.error("[v0] Memory save error:", error.message);
-        }
       }
     }
 

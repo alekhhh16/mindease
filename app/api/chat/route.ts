@@ -80,16 +80,13 @@ export async function POST(request: NextRequest) {
     // Fetch user memories if authenticated
     let memoriesContext = "";
     if (userId) {
-      const { data: memories, error: memError } = await supabase
+      const { data: memories } = await supabase
         .from("user_memory")
         .select("key, value")
         .eq("user_id", userId);
       
-      console.log("[v0] Memory fetch for user:", userId, "Found:", memories?.length || 0, "Error:", memError?.message);
-      
       if (memories && memories.length > 0) {
         memoriesContext = formatMemoriesForContext(memories);
-        console.log("[v0] Memories context:", memoriesContext);
       }
     }
 
