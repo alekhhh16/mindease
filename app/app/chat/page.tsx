@@ -626,13 +626,13 @@ export default function ChatPage() {
         }
 
         // Extract and save memories from conversation (async, don't wait)
-        if (userId && sanitizedHistory.length >= 2) {
+        // Extract from EVERY message - even the first one might contain personal info
+        if (userId) {
+          const allMessages = [...sanitizedHistory, { role: "assistant", content: responseText }];
           fetch("/api/memory/extract", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-              messages: [...sanitizedHistory, { role: "assistant", content: responseText }]
-            }),
+            body: JSON.stringify({ messages: allMessages }),
           }).catch(() => {}); // Silent fail - memory extraction is not critical
         }
 

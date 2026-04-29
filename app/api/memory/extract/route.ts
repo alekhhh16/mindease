@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     const { messages } = await req.json();
 
-    if (!messages || messages.length < 2) {
+    if (!messages || messages.length === 0) {
       return NextResponse.json({ extracted: [] });
     }
 
