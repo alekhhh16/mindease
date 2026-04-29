@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
               Didn&apos;t receive the email? Check your spam folder or try again.
             </p>
             <Link
-              href="/login"
+              href="/auth/login"
               className="inline-flex items-center gap-2 text-primary hover:underline"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
         className="w-full max-w-md"
       >
         <Link
-          href="/login"
+          href="/auth/login"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />

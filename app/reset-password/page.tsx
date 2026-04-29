@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
       } else {
         setSuccess(true);
         setTimeout(() => {
-          router.push("/login");
+          router.push("/auth/login");
         }, 3000);
       }
     } catch {
@@ -101,7 +101,7 @@ export default function ResetPasswordPage() {
         className="w-full max-w-md"
       >
         <Link
-          href="/login"
+          href="/auth/login"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
