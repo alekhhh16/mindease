@@ -14,6 +14,7 @@ import {
 import { useDailyQuote } from "@/hooks/useJournalQueries";
 import { useMoodEntries, useUserStats } from "@/hooks/useQueries";
 import { useAppStore } from "@/store/appStore";
+import { WelcomeModal, useOnboarding } from "@/components/welcome-modal";
 
 function getUserId(): string {
   if (typeof window === "undefined") return "default";
@@ -236,6 +237,7 @@ export default function DashboardPage() {
   const { data: userStats } = useUserStats(userId);
   const { data: quote, isLoading: quoteLoading } = useDailyQuote();
   const { stressReliefOpen, setStressReliefOpen } = useAppStore();
+  const { showWelcome, completeOnboarding } = useOnboarding();
 
   const [hour] = useState(() => new Date().getHours());
   const timeGreeting =
@@ -306,6 +308,9 @@ export default function DashboardPage() {
       <AnimatePresence>
         {stressReliefOpen && (
           <StressReliefModal onClose={() => setStressReliefOpen(false)} />
+        )}
+        {showWelcome && (
+          <WelcomeModal onClose={completeOnboarding} />
         )}
       </AnimatePresence>
 

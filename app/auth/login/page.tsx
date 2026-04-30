@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Loader2, Mail, Lock, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, Mail, Lock, ArrowLeft, Sparkles, Shield } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -153,7 +153,20 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
+          
+          {/* Trust Elements */}
+          <div className="mt-6 pt-6 border-t border-border/50">
+            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <Shield className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Your data is private & secure</span>
+            </div>
+          </div>
         </div>
+        
+        {/* Disclaimer */}
+        <p className="text-xs text-muted-foreground text-center mt-4">
+          MindEase provides emotional support, not medical advice.
+        </p>
       </motion.div>
     </div>
   );
