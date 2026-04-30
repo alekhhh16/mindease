@@ -730,15 +730,22 @@ export default function ChatPage() {
         ))}
 
         {typing && (
-          <div className="flex justify-start">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-start"
+          >
             <div className="glass px-4 py-3 rounded-2xl rounded-bl-sm shadow-soft">
-              <div className="flex gap-1">
-                <div className="typing-dot w-2 h-2 rounded-full bg-muted-foreground" />
-                <div className="typing-dot w-2 h-2 rounded-full bg-muted-foreground" />
-                <div className="typing-dot w-2 h-2 rounded-full bg-muted-foreground" />
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Mira is typing</span>
+                <div className="flex gap-1">
+                  <div className="typing-dot w-1.5 h-1.5 rounded-full bg-primary" />
+                  <div className="typing-dot w-1.5 h-1.5 rounded-full bg-primary" />
+                  <div className="typing-dot w-1.5 h-1.5 rounded-full bg-primary" />
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         <AnimatePresence>

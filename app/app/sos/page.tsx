@@ -357,48 +357,74 @@ export default function SosPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24">
-      {/* Header */}
+    <div className="min-h-screen pb-24 bg-background">
+      {/* Emotional Header */}
       <div className="px-6 pt-8 pb-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          className="text-center"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">Crisis Support</h1>
-          </div>
-          <p className="text-gray-400">
-            You are not alone. Help is available.
+          <motion.div 
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center"
+          >
+            <Heart className="w-8 h-8 text-white" />
+          </motion.div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">You Are Not Alone</h1>
+          <p className="text-muted-foreground text-lg mb-4">
+            Whatever you&apos;re going through, help is here.
+          </p>
+          <p className="text-sm text-muted-foreground/80 max-w-sm mx-auto">
+            Take a deep breath. You&apos;ve already taken a brave step by coming here.
           </p>
         </motion.div>
       </div>
+      
+      {/* Quick Breathing Tip */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mx-6 mb-6 p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl border border-blue-500/20"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+            <Wind className="w-5 h-5 text-blue-400" />
+          </div>
+          <div>
+            <p className="text-foreground font-medium">Quick Calm</p>
+            <p className="text-sm text-muted-foreground">Breathe in for 4 seconds, hold for 4, breathe out for 4</p>
+          </div>
+        </div>
+      </motion.div>
 
-      {/* Emergency Banner */}
+      {/* Emergency Banner - More Prominent */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="mx-6 mb-6 p-4 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl border border-red-500/30"
+        transition={{ delay: 0.4 }}
+        className="mx-6 mb-6 p-5 bg-gradient-to-r from-red-500/30 to-rose-500/30 rounded-2xl border-2 border-red-500/50"
       >
-        <div className="flex items-start gap-3">
-          <AlertTriangle className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
-          <div>
-            <h3 className="text-white font-semibold mb-1">
-              If you are in immediate danger
-            </h3>
-            <p className="text-gray-300 text-sm mb-3">
-              Call emergency services or go to your nearest emergency room.
-            </p>
-            <a
-              href="tel:112"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 rounded-full text-white font-semibold text-sm"
-            >
-              <Phone className="w-4 h-4" />
-              Call 112
-            </a>
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-500/20 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-400" />
           </div>
+          <h3 className="text-foreground font-bold text-lg mb-2">
+            Need Immediate Help?
+          </h3>
+          <p className="text-muted-foreground text-sm mb-4">
+            If you&apos;re in immediate danger, please reach out now.
+          </p>
+          <a
+            href="tel:112"
+            className="inline-flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 bg-red-500 hover:bg-red-600 rounded-xl text-white font-bold text-lg transition-colors shadow-lg shadow-red-500/25"
+          >
+            <Phone className="w-5 h-5" />
+            Call Emergency (112)
+          </a>
         </div>
       </motion.div>
 
@@ -406,17 +432,17 @@ export default function SosPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.5 }}
         className="mx-6 mb-6"
       >
         <button
           onClick={nextAffirmation}
-          className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-500/30 text-left"
+          className="w-full p-6 bg-gradient-to-br from-primary/10 to-pink-500/10 rounded-2xl border border-primary/20 text-left hover:bg-primary/15 transition-colors"
         >
           <div className="flex items-center gap-2 mb-3">
-            <Star className="w-5 h-5 text-purple-400" />
-            <span className="text-purple-400 text-sm font-medium">
-              Affirmation
+            <Star className="w-5 h-5 text-primary" />
+            <span className="text-primary text-sm font-medium">
+              Words of Comfort
             </span>
           </div>
           <AnimatePresence mode="wait">
@@ -425,12 +451,12 @@ export default function SosPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="text-white text-lg font-medium"
+              className="text-foreground text-lg font-medium"
             >
               &ldquo;{affirmations[currentAffirmation]}&rdquo;
             </motion.p>
           </AnimatePresence>
-          <p className="text-gray-500 text-xs mt-3">Tap for another</p>
+          <p className="text-muted-foreground text-xs mt-3">Tap for another affirmation</p>
         </button>
       </motion.div>
 
