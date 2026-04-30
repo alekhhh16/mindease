@@ -4,18 +4,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Phone,
+  MessageCircle,
   Heart,
   Shield,
   AlertTriangle,
+  ExternalLink,
   ChevronRight,
   Sparkles,
   Wind,
   Clock,
   MapPin,
+  Globe,
   Star,
   X,
-  ExternalLink,
-  Globe,
 } from "lucide-react";
 
 // Crisis helplines data
@@ -29,8 +30,6 @@ const crisisHelplines = [
     hours: "Mon-Sat, 8am-10pm",
     type: "Counselling",
     color: "from-blue-500 to-cyan-500",
-    bgLight: "bg-blue-50 dark:bg-blue-500/10",
-    textColor: "text-blue-700 dark:text-blue-400",
   },
   {
     id: 2,
@@ -41,8 +40,6 @@ const crisisHelplines = [
     hours: "24/7",
     type: "Mental Health",
     color: "from-purple-500 to-pink-500",
-    bgLight: "bg-purple-50 dark:bg-purple-500/10",
-    textColor: "text-purple-700 dark:text-purple-400",
   },
   {
     id: 3,
@@ -53,8 +50,6 @@ const crisisHelplines = [
     hours: "24/7",
     type: "Crisis",
     color: "from-red-500 to-orange-500",
-    bgLight: "bg-red-50 dark:bg-red-500/10",
-    textColor: "text-red-700 dark:text-red-400",
   },
   {
     id: 4,
@@ -65,8 +60,6 @@ const crisisHelplines = [
     hours: "24/7",
     type: "Emotional Support",
     color: "from-emerald-500 to-teal-500",
-    bgLight: "bg-emerald-50 dark:bg-emerald-500/10",
-    textColor: "text-emerald-700 dark:text-emerald-400",
   },
   {
     id: 5,
@@ -77,8 +70,6 @@ const crisisHelplines = [
     hours: "Mon-Sat, 9am-5pm",
     type: "Psychiatric",
     color: "from-indigo-500 to-blue-500",
-    bgLight: "bg-indigo-50 dark:bg-indigo-500/10",
-    textColor: "text-indigo-700 dark:text-indigo-400",
   },
   {
     id: 6,
@@ -89,8 +80,6 @@ const crisisHelplines = [
     hours: "Daily, 12pm-8pm",
     type: "Emotional Support",
     color: "from-amber-500 to-orange-500",
-    bgLight: "bg-amber-50 dark:bg-amber-500/10",
-    textColor: "text-amber-700 dark:text-amber-400",
   },
 ];
 
@@ -102,7 +91,6 @@ const copingStrategies = [
     description: "4-4-4-4 breathing to calm your nervous system",
     icon: Wind,
     color: "from-blue-400 to-cyan-500",
-    bgLight: "bg-blue-50 dark:bg-blue-500/10",
     steps: [
       "Breathe in for 4 seconds",
       "Hold for 4 seconds",
@@ -117,7 +105,6 @@ const copingStrategies = [
     description: "Use your senses to ground yourself in the present",
     icon: Sparkles,
     color: "from-purple-400 to-pink-500",
-    bgLight: "bg-purple-50 dark:bg-purple-500/10",
     steps: [
       "5 things you can SEE",
       "4 things you can TOUCH",
@@ -132,7 +119,6 @@ const copingStrategies = [
     description: "Imagine a place where you feel completely safe",
     icon: Shield,
     color: "from-emerald-400 to-teal-500",
-    bgLight: "bg-emerald-50 dark:bg-emerald-500/10",
     steps: [
       "Close your eyes",
       "Picture a safe, peaceful place",
@@ -147,7 +133,6 @@ const copingStrategies = [
     description: "Release tension by tensing and relaxing muscles",
     icon: Heart,
     color: "from-pink-400 to-rose-500",
-    bgLight: "bg-pink-50 dark:bg-pink-500/10",
     steps: [
       "Start with your feet - tense for 5 seconds",
       "Release and notice the relaxation",
@@ -179,30 +164,30 @@ function SafetyPlanModal({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-card rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto shadow-elevated border border-border"
+        className="bg-[#1a1a2e] rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-xl font-bold text-foreground">
+            <h3 className="text-xl font-bold text-white">
               Personal Safety Plan
             </h3>
-            <p className="text-muted-foreground text-sm mt-1">
+            <p className="text-gray-400 text-sm mt-1">
               Steps to follow when in crisis
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
+            className="p-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <X className="w-5 h-5 text-muted-foreground" />
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
@@ -239,24 +224,24 @@ function SafetyPlanModal({ onClose }: { onClose: () => void }) {
                 "If coping strategies aren't helping, call a crisis line or go to emergency services.",
             },
           ].map((item) => (
-            <div key={item.step} className="bg-muted/50 dark:bg-muted/30 rounded-xl p-4">
+            <div key={item.step} className="bg-white/5 rounded-xl p-4">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
                   {item.step}
                 </div>
-                <h4 className="text-foreground font-semibold">{item.title}</h4>
+                <h4 className="text-white font-semibold">{item.title}</h4>
               </div>
-              <p className="text-muted-foreground text-sm ml-11">{item.content}</p>
+              <p className="text-gray-400 text-sm ml-11">{item.content}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-6 p-4 bg-red-100 dark:bg-red-500/10 rounded-xl border border-red-200 dark:border-red-500/20">
+        <div className="mt-6 p-4 bg-red-500/10 rounded-xl border border-red-500/20">
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
-            <span className="text-red-700 dark:text-red-400 font-semibold">Emergency</span>
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <span className="text-red-400 font-semibold">Emergency</span>
           </div>
-          <p className="text-red-800 dark:text-gray-300 text-sm">
+          <p className="text-gray-300 text-sm">
             If you are in immediate danger, call emergency services (112) or go
             to your nearest emergency room.
           </p>
@@ -282,14 +267,14 @@ function CopingStrategyModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-card rounded-3xl p-6 max-w-md w-full shadow-elevated border border-border"
+        className="bg-[#1a1a2e] rounded-3xl p-6 max-w-md w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
@@ -300,14 +285,14 @@ function CopingStrategyModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
+            className="p-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <X className="w-5 h-5 text-muted-foreground" />
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <h3 className="text-2xl font-bold text-foreground mb-2">{strategy.title}</h3>
-        <p className="text-muted-foreground mb-6">{strategy.description}</p>
+        <h3 className="text-2xl font-bold text-white mb-2">{strategy.title}</h3>
+        <p className="text-gray-400 mb-6">{strategy.description}</p>
 
         {/* Steps */}
         <div className="space-y-3 mb-6">
@@ -321,8 +306,8 @@ function CopingStrategyModal({
                 idx === currentStep
                   ? `bg-gradient-to-r ${strategy.color} text-white`
                   : idx < currentStep
-                    ? "bg-muted text-foreground"
-                    : "bg-muted/50 text-muted-foreground"
+                    ? "bg-white/10 text-gray-300"
+                    : "bg-white/5 text-gray-500"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -338,7 +323,7 @@ function CopingStrategyModal({
           <button
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
             disabled={currentStep === 0}
-            className="flex-1 py-3 rounded-xl bg-muted text-foreground font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-3 rounded-xl bg-white/10 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
@@ -372,7 +357,7 @@ export default function SosPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <motion.div
@@ -383,9 +368,9 @@ export default function SosPage() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
               <Shield className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Crisis Support</h1>
+            <h1 className="text-2xl font-bold text-white">Crisis Support</h1>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-gray-400">
             You are not alone. Help is available.
           </p>
         </motion.div>
@@ -395,22 +380,20 @@ export default function SosPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="mx-6 mb-6 p-5 bg-red-100 dark:bg-red-500/10 rounded-2xl border-2 border-red-300 dark:border-red-500/30 shadow-soft"
+        className="mx-6 mb-6 p-4 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl border border-red-500/30"
       >
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-5 h-5 text-white" />
-          </div>
+          <AlertTriangle className="w-6 h-6 text-red-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="text-red-800 dark:text-white font-bold mb-1">
+            <h3 className="text-white font-semibold mb-1">
               If you are in immediate danger
             </h3>
-            <p className="text-red-700 dark:text-red-200 text-sm mb-3">
+            <p className="text-gray-300 text-sm mb-3">
               Call emergency services or go to your nearest emergency room.
             </p>
             <a
               href="tel:112"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 rounded-full text-white font-semibold text-sm transition-colors shadow-md"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500 rounded-full text-white font-semibold text-sm"
             >
               <Phone className="w-4 h-4" />
               Call 112
@@ -428,11 +411,11 @@ export default function SosPage() {
       >
         <button
           onClick={nextAffirmation}
-          className="w-full p-6 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-500/20 dark:to-pink-500/20 rounded-2xl border border-purple-200 dark:border-purple-500/30 text-left shadow-soft hover:shadow-soft-lg transition-all"
+          className="w-full p-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-500/30 text-left"
         >
           <div className="flex items-center gap-2 mb-3">
-            <Star className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            <span className="text-purple-700 dark:text-purple-400 text-sm font-semibold">
+            <Star className="w-5 h-5 text-purple-400" />
+            <span className="text-purple-400 text-sm font-medium">
               Affirmation
             </span>
           </div>
@@ -442,12 +425,12 @@ export default function SosPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="text-purple-900 dark:text-white text-lg font-medium"
+              className="text-white text-lg font-medium"
             >
               &ldquo;{affirmations[currentAffirmation]}&rdquo;
             </motion.p>
           </AnimatePresence>
-          <p className="text-purple-600 dark:text-purple-300/60 text-xs mt-3">Tap for another</p>
+          <p className="text-gray-500 text-xs mt-3">Tap for another</p>
         </button>
       </motion.div>
 
@@ -460,26 +443,26 @@ export default function SosPage() {
       >
         <button
           onClick={() => setShowSafetyPlan(true)}
-          className="w-full p-4 bg-card hover:bg-muted/50 rounded-2xl flex items-center justify-between transition-all shadow-soft border border-border"
+          className="w-full p-4 bg-white/5 hover:bg-white/10 rounded-2xl flex items-center justify-between transition-all"
         >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="text-foreground font-semibold">Personal Safety Plan</h3>
-              <p className="text-muted-foreground text-sm">
+              <h3 className="text-white font-semibold">Personal Safety Plan</h3>
+              <p className="text-gray-400 text-sm">
                 Steps to follow when in crisis
               </p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          <ChevronRight className="w-5 h-5 text-gray-500" />
         </button>
       </motion.div>
 
       {/* Quick Coping Strategies */}
       <div className="px-6 mb-6">
-        <h2 className="text-lg font-bold text-foreground mb-4">
+        <h2 className="text-lg font-semibold text-white mb-4">
           Quick Coping Strategies
         </h2>
         <div className="grid grid-cols-2 gap-3">
@@ -492,17 +475,17 @@ export default function SosPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + idx * 0.1 }}
                 onClick={() => setSelectedStrategy(strategy)}
-                className={`p-4 ${strategy.bgLight} hover:scale-[1.02] rounded-2xl text-left transition-all shadow-soft border border-border/50`}
+                className="p-4 bg-white/5 hover:bg-white/10 rounded-2xl text-left transition-all"
               >
                 <div
                   className={`w-10 h-10 rounded-xl bg-gradient-to-br ${strategy.color} flex items-center justify-center mb-3`}
                 >
                   <IconComponent className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-foreground font-semibold text-sm mb-1">
+                <h3 className="text-white font-semibold text-sm mb-1">
                   {strategy.title}
                 </h3>
-                <p className="text-muted-foreground text-xs line-clamp-2">
+                <p className="text-gray-500 text-xs line-clamp-2">
                   {strategy.description}
                 </p>
               </motion.button>
@@ -514,8 +497,8 @@ export default function SosPage() {
       {/* Crisis Helplines */}
       <div className="px-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-foreground">Crisis Helplines</h2>
-          <div className="flex items-center gap-1 text-muted-foreground text-sm">
+          <h2 className="text-lg font-semibold text-white">Crisis Helplines</h2>
+          <div className="flex items-center gap-1 text-gray-500 text-sm">
             <MapPin className="w-4 h-4" />
             <span>India</span>
           </div>
@@ -527,18 +510,18 @@ export default function SosPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + idx * 0.05 }}
-              className="bg-card rounded-2xl p-4 shadow-soft border border-border"
+              className="bg-white/5 rounded-2xl p-4"
             >
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h3 className="text-foreground font-semibold">{helpline.name}</h3>
-                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <h3 className="text-white font-semibold">{helpline.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
                     <span
-                      className={`px-2 py-0.5 rounded-full ${helpline.bgLight} ${helpline.textColor} text-xs font-medium border border-current/20`}
+                      className={`px-2 py-0.5 rounded-full bg-gradient-to-r ${helpline.color} text-white text-xs font-medium`}
                     >
                       {helpline.type}
                     </span>
-                    <span className="flex items-center gap-1 text-muted-foreground text-xs">
+                    <span className="flex items-center gap-1 text-gray-500 text-xs">
                       <Clock className="w-3 h-3" />
                       {helpline.hours}
                     </span>
@@ -546,18 +529,18 @@ export default function SosPage() {
                 </div>
                 <a
                   href={`tel:${helpline.number.replace(/-/g, "")}`}
-                  className="p-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl transition-colors shadow-md"
+                  className="p-3 bg-emerald-500 rounded-xl"
                 >
                   <Phone className="w-5 h-5 text-white" />
                 </a>
               </div>
-              <p className="text-muted-foreground text-sm mb-3">
+              <p className="text-gray-400 text-sm mb-3">
                 {helpline.description}
               </p>
               <div className="flex items-center gap-2">
                 <a
                   href={`tel:${helpline.number.replace(/-/g, "")}`}
-                  className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-foreground text-sm font-medium hover:bg-muted/80 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-lg text-white text-sm"
                 >
                   <Phone className="w-4 h-4" />
                   {helpline.number}
@@ -570,7 +553,7 @@ export default function SosPage() {
 
       {/* Online Resources */}
       <div className="px-6 mt-6 mb-6">
-        <h2 className="text-lg font-bold text-foreground mb-4">
+        <h2 className="text-lg font-semibold text-white mb-4">
           Online Resources
         </h2>
         <div className="space-y-3">
@@ -599,26 +582,50 @@ export default function SosPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 + idx * 0.1 }}
-              className="flex items-center justify-between p-4 bg-card hover:bg-muted/50 rounded-2xl transition-all shadow-soft border border-border"
+              className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-2xl transition-all"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-primary" />
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-foreground font-semibold text-sm">
+                  <h3 className="text-white font-semibold text-sm">
                     {resource.name}
                   </h3>
-                  <p className="text-muted-foreground text-xs">
-                    {resource.description}
-                  </p>
+                  <p className="text-gray-500 text-xs">{resource.description}</p>
                 </div>
               </div>
-              <ExternalLink className="w-4 h-4 text-muted-foreground" />
+              <ExternalLink className="w-5 h-5 text-gray-500" />
             </motion.a>
           ))}
         </div>
       </div>
+
+      {/* Chat Support */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mx-6 mb-6"
+      >
+        <a
+          href="/app/chat"
+          className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-500/30"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <MessageCircle className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-white font-semibold">Talk to Mira</h3>
+              <p className="text-gray-400 text-sm">
+                Your AI wellness companion
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-500" />
+        </a>
+      </motion.div>
 
       {/* Modals */}
       <AnimatePresence>

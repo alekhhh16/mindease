@@ -41,7 +41,6 @@ interface ChatMessage {
 }
 
 interface UserMemory {
-  category: string;
   key: string;
   value: string;
 }
@@ -50,31 +49,13 @@ interface UserMemory {
 function formatMemoriesForContext(memories: UserMemory[]): string {
   if (!memories || memories.length === 0) return "";
 
-  const grouped: Record<string, string[]> = {};
-  
-  for (const memory of memories) {
-    if (!grouped[memory.category]) {
-      grouped[memory.category] = [];
-    }
-    grouped[memory.category].push(`${memory.key}: ${memory.value}`);
-  }
-
   let context = "\n\n=== WHAT YOU KNOW ABOUT THIS USER ===\n";
   
-  if (grouped.personal) {
-    context += `\nPersonal Info:\n- ${grouped.personal.join("\n- ")}`;
-  }
-  if (grouped.preferences) {
-    context += `\nPreferences:\n- ${grouped.preferences.join("\n- ")}`;
-  }
-  if (grouped.context) {
-    context += `\nCurrent Situation:\n- ${grouped.context.join("\n- ")}`;
-  }
-  if (grouped.important) {
-    context += `\nImportant to Remember:\n- ${grouped.important.join("\n- ")}`;
+  for (const memory of memories) {
+    context += `- ${memory.key}: ${memory.value}\n`;
   }
   
-  context += "\n\n=== USE THIS INFORMATION NATURALLY ===\n";
+  context += "\n=== USE THIS INFORMATION NATURALLY ===\n";
   
   return context;
 }
@@ -100,8 +81,8 @@ export async function POST(request: NextRequest) {
     let memoriesContext = "";
     if (userId) {
       const { data: memories } = await supabase
-        .from("user_memories")
-        .select("category, key, value")
+        .from("user_memory")
+        .select("key, value")
         .eq("user_id", userId);
       
       if (memories && memories.length > 0) {

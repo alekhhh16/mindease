@@ -238,7 +238,7 @@ export default function MoodPage() {
     <>
       <StressReliefModal />
 
-      <div ref={containerRef} className="px-4 py-6 space-y-5 max-w-lg mx-auto pb-20">
+      <div ref={containerRef} className="min-h-screen px-4 py-6 space-y-5 max-w-lg mx-auto pb-24">
         {/* Page header */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
@@ -297,7 +297,7 @@ export default function MoodPage() {
                     className="text-2xl"
                     style={{ filter: "drop-shadow(0 2px 6px oklch(0.888 0.071 53 / 0.5))" }}
                   >
-                    {BADGE_DISPLAY[b]?.icon ?? "🏅"}
+                    {BADGE_DISPLAY[b]?.icon ?? "����"}
                   </motion.span>
                 ))}
               </div>

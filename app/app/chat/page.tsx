@@ -626,14 +626,13 @@ export default function ChatPage() {
         }
 
         // Extract and save memories from conversation (async, don't wait)
-        if (userId && sanitizedHistory.length >= 2) {
-          fetch("/api/memories/extract", {
+        // Extract from EVERY message - even the first one might contain personal info
+        if (userId) {
+          const allMessages = [...sanitizedHistory, { role: "assistant", content: responseText }];
+          fetch("/api/memory/extract", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-              messages: [...sanitizedHistory, { role: "assistant", content: responseText }],
-              sessionId 
-            }),
+            body: JSON.stringify({ messages: allMessages }),
           }).catch(() => {}); // Silent fail - memory extraction is not critical
         }
 
@@ -667,7 +666,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-64px-64px)] bg-background relative overflow-hidden">
       <AnimatePresence>
         {showBreathingExercise && <BreathingOverlay onClose={() => setShowBreathingExercise(false)} />}
         <ChatHistorySidebar
