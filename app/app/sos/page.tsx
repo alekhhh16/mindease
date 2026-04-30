@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Phone,
@@ -17,7 +17,163 @@ import {
   Globe,
   Star,
   X,
+  Navigation,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
+
+// Location types
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  city?: string;
+  area?: string;
+}
+
+// Location Permission Modal Component
+function LocationPermissionModal({
+  onAllow,
+  onDeny,
+}: {
+  onAllow: () => void;
+  onDeny: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        className="bg-card rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-border"
+      >
+        {/* Icon */}
+        <div className="flex justify-center mb-6">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center"
+          >
+            <Navigation className="w-10 h-10 text-white" />
+          </motion.div>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl font-bold text-foreground text-center mb-2">
+          Enable Location
+        </h3>
+        
+        {/* Description */}
+        <p className="text-muted-foreground text-center mb-6">
+          To help you better, we can use your location to find nearby emergency support and services.
+        </p>
+
+        {/* Privacy Notice */}
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 mb-6">
+          <div className="flex items-start gap-2">
+            <Shield className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">
+              Your location is used only for emergency assistance. We do not store your location permanently.
+            </p>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={onAllow}
+            className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
+          >
+            <MapPin className="w-5 h-5" />
+            Allow Location
+          </button>
+          <button
+            onClick={onDeny}
+            className="w-full py-3.5 bg-muted hover:bg-muted/80 rounded-xl text-muted-foreground font-medium transition-colors"
+          >
+            Continue Without Location
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Location Status Banner Component
+function LocationBanner({
+  location,
+  loading,
+  error,
+}: {
+  location: LocationData | null;
+  loading: boolean;
+  error: string | null;
+}) {
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-6 mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl"
+      >
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
+          <span className="text-sm text-blue-600 dark:text-blue-400">
+            Getting your location...
+          </span>
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-6 mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl"
+      >
+        <div className="flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-500" />
+          <span className="text-sm text-amber-600 dark:text-amber-400">
+            {error}
+          </span>
+        </div>
+      </motion.div>
+    );
+  }
+
+  if (location) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mx-6 mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl"
+      >
+        <div className="flex items-center gap-3">
+          <CheckCircle className="w-5 h-5 text-emerald-500" />
+          <div>
+            <span className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+              {location.city || location.area
+                ? `You are near: ${location.city || location.area}`
+                : "Location enabled"}
+            </span>
+            <p className="text-xs text-muted-foreground">
+              Showing nearby emergency services
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  return null;
+}
 
 // Crisis helplines data
 const crisisHelplines = [
@@ -351,6 +507,95 @@ export default function SosPage() {
   >(null);
   const [showSafetyPlan, setShowSafetyPlan] = useState(false);
   const [currentAffirmation, setCurrentAffirmation] = useState(0);
+  
+  // Location state
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [location, setLocation] = useState<LocationData | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [locationAsked, setLocationAsked] = useState(false);
+
+  // Check if location was already asked in this session
+  useEffect(() => {
+    const wasAsked = sessionStorage.getItem("sos_location_asked");
+    if (!wasAsked) {
+      // Show location modal after a brief delay
+      const timer = setTimeout(() => {
+        setShowLocationModal(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      // Try to get stored location if permission was granted before
+      const storedLocation = sessionStorage.getItem("sos_user_location");
+      if (storedLocation) {
+        setLocation(JSON.parse(storedLocation));
+      }
+    }
+  }, []);
+
+  // Get user location
+  const getUserLocation = async () => {
+    setLocationLoading(true);
+    setLocationError(null);
+    setShowLocationModal(false);
+    sessionStorage.setItem("sos_location_asked", "true");
+    setLocationAsked(true);
+
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser");
+      setLocationLoading(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const locationData: LocationData = { latitude, longitude };
+
+        // Try to get city name using reverse geocoding
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`
+          );
+          const data = await response.json();
+          if (data.address) {
+            locationData.city = data.address.city || data.address.town || data.address.village;
+            locationData.area = data.address.state_district || data.address.state;
+          }
+        } catch {
+          // Reverse geocoding failed, but we still have coordinates
+        }
+
+        setLocation(locationData);
+        sessionStorage.setItem("sos_user_location", JSON.stringify(locationData));
+        setLocationLoading(false);
+      },
+      (error) => {
+        setLocationLoading(false);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError("Location permission denied. Using default services.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            setLocationError("Location unavailable. Using default services.");
+            break;
+          case error.TIMEOUT:
+            setLocationError("Location request timed out. Using default services.");
+            break;
+          default:
+            setLocationError("Unable to get location. Using default services.");
+        }
+      },
+      { timeout: 10000, enableHighAccuracy: false }
+    );
+  };
+
+  // Handle deny location
+  const handleDenyLocation = () => {
+    setShowLocationModal(false);
+    sessionStorage.setItem("sos_location_asked", "true");
+    setLocationAsked(true);
+  };
 
   const nextAffirmation = () => {
     setCurrentAffirmation((prev) => (prev + 1) % affirmations.length);
@@ -358,6 +603,23 @@ export default function SosPage() {
 
   return (
     <div className="min-h-screen pb-24 bg-background">
+      {/* Location Permission Modal */}
+      <AnimatePresence>
+        {showLocationModal && (
+          <LocationPermissionModal
+            onAllow={getUserLocation}
+            onDeny={handleDenyLocation}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Location Status Banner */}
+      <LocationBanner
+        location={location}
+        loading={locationLoading}
+        error={locationError}
+      />
+
       {/* Emotional Header */}
       <div className="px-6 pt-8 pb-6">
         <motion.div
@@ -523,10 +785,10 @@ export default function SosPage() {
       {/* Crisis Helplines */}
       <div className="px-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Crisis Helplines</h2>
-          <div className="flex items-center gap-1 text-gray-500 text-sm">
+          <h2 className="text-lg font-semibold text-foreground">Crisis Helplines</h2>
+          <div className="flex items-center gap-1 text-muted-foreground text-sm">
             <MapPin className="w-4 h-4" />
-            <span>India</span>
+            <span>{location?.city || location?.area || "India"}</span>
           </div>
         </div>
         <div className="space-y-3">
@@ -536,18 +798,18 @@ export default function SosPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + idx * 0.05 }}
-              className="bg-white/5 rounded-2xl p-4"
+              className="bg-card rounded-2xl p-4 border border-border"
             >
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h3 className="text-white font-semibold">{helpline.name}</h3>
+                  <h3 className="text-foreground font-semibold">{helpline.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span
                       className={`px-2 py-0.5 rounded-full bg-gradient-to-r ${helpline.color} text-white text-xs font-medium`}
                     >
                       {helpline.type}
                     </span>
-                    <span className="flex items-center gap-1 text-gray-500 text-xs">
+                    <span className="flex items-center gap-1 text-muted-foreground text-xs">
                       <Clock className="w-3 h-3" />
                       {helpline.hours}
                     </span>
@@ -555,12 +817,12 @@ export default function SosPage() {
                 </div>
                 <a
                   href={`tel:${helpline.number.replace(/-/g, "")}`}
-                  className="p-3 bg-emerald-500 rounded-xl"
+                  className="p-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl transition-colors"
                 >
                   <Phone className="w-5 h-5 text-white" />
                 </a>
               </div>
-              <p className="text-gray-400 text-sm mb-3">
+              <p className="text-muted-foreground text-sm mb-3">
                 {helpline.description}
               </p>
               <div className="flex items-center gap-2">

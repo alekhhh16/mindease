@@ -36,37 +36,33 @@ export async function POST(req: Request) {
     // Use AI to extract personal information with text generation
     const { text } = await generateText({
       model: groq("llama-3.3-70b-versatile"),
-      prompt: `You are a memory extraction assistant. Extract personal information from this conversation.
+      prompt: `Extract ONLY explicitly stated personal info from this conversation.
 
-IMPORTANT: Respond ONLY with a valid JSON array. No explanations, no markdown, just the JSON.
+CRITICAL RULES:
+- ONLY extract info the USER directly stated (not AI responses)
+- DO NOT infer, assume, or guess anything
+- DO NOT make up information
+- If unsure, DO NOT include it
+- Return [] if no clear personal info found
 
-Format: [{"key": "type", "value": "info"}, ...]
+Format: [{"key": "type", "value": "exact info stated"}]
 
-Keys to use (ONE entry per key, combine multiple values with commas):
-- "name" - user's full name
-- "nickname" - any nickname they prefer
-- "college" - college/university name
-- "course" - what they are studying (BTech, MBA, etc.)
-- "semester" - current semester if mentioned
-- "location" - city/location
-- "age" - age if mentioned
-- "friends" - ALL friend names combined (e.g., "Anmol, Arpit, Alekh")
-- "family" - family members mentioned (e.g., "mom, dad, sister Priya")
-- "interests" - ALL hobbies/interests combined (e.g., "music, coding, gaming")
-- "occupation" - student/job
-- "relationship" - relationship status if mentioned
-- "feelings" - current emotional state/struggles
-- "goals" - any goals or aspirations mentioned
+Keys (only use if USER explicitly stated):
+- "name" - their actual name they said
+- "location" - city they said they are from
+- "college" - college name they mentioned
+- "friends" - friend names they mentioned
+- "age" - age they stated
 
-RULES:
-1. Only extract EXPLICITLY stated information
-2. Combine multiple values of same type with commas
-3. If nothing found, respond with: []
+WRONG examples (DO NOT DO THIS):
+- User says "I feel stressed" -> DO NOT extract college or location
+- User says "I'm from Kanpur" -> DO NOT add "Delhi University"
+- User says "hi" -> Return []
 
 Conversation:
 ${conversationText}
 
-JSON Response:`
+JSON (only explicit facts, or empty array):`
     });
 
     // Parse the response
