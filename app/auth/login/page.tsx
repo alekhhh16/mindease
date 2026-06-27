@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail, Lock, ArrowLeft, Sparkles, Shield } from "lucide-react";
 
@@ -20,20 +19,34 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-    if (error) {
-      setError(error.message);
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = data.error || "Failed to login";
+        setError(errorMessage);
+        setIsLoading(false);
+        return;
+      }
+
+      router.push("/app");
+      router.refresh();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to login. Please try again.";
+      setError(errorMessage);
       setIsLoading(false);
-      return;
     }
-
-    router.push("/app");
-    router.refresh();
   };
 
   return (

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail, Lock, User, ArrowLeft, Sparkles } from "lucide-react";
 
@@ -21,27 +20,42 @@ export default function SignUpPage() {
     setIsLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo:
-          process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ??
-          `${window.location.origin}/auth/callback`,
-        data: {
-          display_name: displayName,
+    try {
+      console.log("[v0] Starting signup with email:", email);
+      
+      const response = await fetch("/api/auth/sign-up", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
-    });
+        body: JSON.stringify({
+          email,
+          password,
+          display_name: displayName,
+        }),
+      });
 
-    if (error) {
-      setError(error.message);
+      console.log("[v0] Signup response status:", response.status);
+
+      const data = await response.json();
+      console.log("[v0] Signup response data:", data);
+
+      if (!response.ok) {
+        const errorMessage = data.error || "Failed to create account";
+        console.error("[v0] Signup error:", errorMessage);
+        setError(errorMessage);
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("[v0] Signup successful");
+      router.push("/auth/sign-up-success");
+    } catch (err) {
+      console.error("[v0] Signup exception:", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to create account. Please try again.";
+      setError(errorMessage);
       setIsLoading(false);
-      return;
     }
-
-    router.push("/auth/sign-up-success");
   };
 
   return (
